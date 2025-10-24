@@ -1,9 +1,7 @@
 // hooks/useStudents.ts
-'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getStudents, addStudent } from '@/services/studentsService';
-import { message } from 'antd';
 
 // 📘 Lấy danh sách học sinh
 export const useStudents = () => {
