@@ -50,8 +50,13 @@ const AddStudentForm = () => {
             }]}>
             <Input/>
           </Form.Item>
-          <Form.Item name="role" label="Role" rules={[{ required: true }]}>
-            <Input/>
+          <Form.Item
+              name="role"
+              label="Role"
+              initialValue="student"
+              rules={[{ required: true }]}
+          >
+            <Input readOnly value="student"  style={{ backgroundColor: "#f0f2f5" }} />
           </Form.Item>
         </div>
 

@@ -3,12 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getStudents, addStudent } from '@/services/studentsService';
 
-// 📘 Lấy danh sách học sinh
-export const useStudents = () => {
-  return useQuery(['students'], getStudents, {
-    staleTime: 1000 * 60, // 1 phút
-  });
-};
+
 
 // 📘 Thêm học sinh
 export const useAddStudent = () => {

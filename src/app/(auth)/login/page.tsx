@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button, Form, Input } from 'antd';
-import { useSendOtp } from '@/hooks/useAuths';
+import { useSendOtp } from '@/hooks/useOtps';
 import toast from 'react-hot-toast';
 import { useRouter } from "next/navigation";
 const Page: React.FC = () => {
@@ -84,7 +84,7 @@ const Page: React.FC = () => {
                             Don’t have an account?{' '}
                             <span
                                 className="text-blue-700 hover:underline cursor-pointer"
-                                onClick={() => navigate('/sign-up')}
+                                onClick={() => router.push('/sign-up')}
                             >
                 Sign Up
               </span>

@@ -4,7 +4,7 @@ import React from "react";
 import { Button, Form, Input } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
-import { useVerifyOtp, useSendOtp } from "@/hooks/useAuths";
+import { useVerifyOtp, useSendOtp } from "@/hooks/useOtps";
 
 const VerifyPage: React.FC = () => {
     const router = useRouter();
@@ -19,11 +19,13 @@ const VerifyPage: React.FC = () => {
         try {
             const data = await verifyOtp({ email, code: values.otp });
             console.log(data);
-            const token = data.data.accessToken
             if (data.success ) {
+                const token = data.data.accessToken
+                const user = data.data.user;
                 localStorage.setItem("access_token", token);
+                localStorage.setItem("user", JSON.stringify(user));
                 toast.success(data.message || "Xác thực OTP thành công!");
-                router.push("/chat");
+                // router.push("/chat");
             } else {
                 toast.error(data.message ||  "Mã OTP không hợp lệ hoặc đã hết hạn!");
             }

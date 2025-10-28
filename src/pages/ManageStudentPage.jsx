@@ -1,8 +1,7 @@
 import StudentTable from '../components/intructor/ManageStudents/StudentTable.tsx'
 import AddStudentForm from "../components/intructor/ManageStudents/AddStudentForm.tsx";
+import { FaSearch } from "react-icons/fa";
 
-import { faSearch} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
 const ManageStudentPage = () => {
   const [showForm, setShowForm] = useState(false)
@@ -21,7 +20,7 @@ const ManageStudentPage = () => {
         <div className="flex gap-2">
           <button className=" text-blue-600 font-semibold bg-blue-50 rounded-sm border border-blue-500 px-4 py-2 " onClick={handleAddClick}>+ Add Student</button>
           <div className=" flex gap-2 bg-gray-50 rounded-sm border border-gray-400  px-4 py-2 items-center justify-center ">
-            <FontAwesomeIcon icon={faSearch}/>
+            <FaSearch/>
             <div className="text-gray-700 font-normal "> filter</div>
           </div>
         </div>
