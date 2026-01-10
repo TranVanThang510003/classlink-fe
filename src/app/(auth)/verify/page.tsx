@@ -25,7 +25,7 @@ const VerifyPage: React.FC = () => {
                 localStorage.setItem("access_token", token);
                 localStorage.setItem("user", JSON.stringify(user));
                 toast.success(data.message || "Xác thực OTP thành công!");
-                // router.push("/chat");
+                router.push("/chat");
             } else {
                 toast.error(data.message ||  "Mã OTP không hợp lệ hoặc đã hết hạn!");
             }

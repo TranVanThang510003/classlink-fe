@@ -1,6 +1,6 @@
 // hooks/useOtp.ts
 import { useMutation } from '@tanstack/react-query';
-import { sendOtp, verifyOtp } from '@/services/authsService';
+import { sendOtp, verifyOtp } from '@/services/OtpService';
 
 interface OtpSendPayload {
     email: string;

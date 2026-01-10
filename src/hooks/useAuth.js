@@ -1,6 +1,6 @@
 // hooks/useAuth.ts
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getUserInf } from "../services/userService";
+import { getUserInf } from "../services/authService";
 
 export const useAuth = () => {
   const queryClient = useQueryClient();

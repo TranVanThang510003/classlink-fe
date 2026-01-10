@@ -1,128 +1,160 @@
-// components/ChatBox.tsx
+
 'use client';
-import React, { useEffect, useRef, useState } from "react";
-import { useMessages } from "@/hooks/useMessages";
-import type { Message } from "@/types/chat";
-import { Button, Input } from "antd";
-import toast from "react-hot-toast";
-import { doc, getDoc, setDoc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useMessages } from '@/hooks/useMessages';
+import type { Message } from '@/types/chat';
+import { Button, Input,InputRef } from 'antd';
+
+import toast from 'react-hot-toast';
+import { doc, getDoc, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import MessageList from './MessageList';
 
 type Props = {
     chatId?: string;
     currentUserId: string;
     partnerId?: string;
+    chatName?:string;
 };
 
-export default function ChatBox({ chatId, currentUserId, partnerId }: Props) {
+function getErrorMessage(err: unknown): string {
+    if (!err || typeof err !== 'object') return 'Failed to send';
+    if ('message' in err && typeof (err).message === 'string') {
+        return (err).message;
+    }
+    return 'Failed to send';
+}
+
+export default function ChatBox({ chatId, currentUserId, partnerId,chatName }: Props) {
     const { messages, sendMessage } = useMessages(chatId);
-    const [text, setText] = useState("");
-    const bottomRef = useRef<HTMLDivElement | null>(null);
+    const [text, setText] = useState('');
+    const [sending, setSending] = useState(false);
+    const [replyTo, setReplyTo] = useState<Message | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const inputRef = useRef<InputRef | null>(null);
+
 
     useEffect(() => {
-        if (!chatId || messages.length === 0) return;
-
-        // Tìm container chứa tin nhắn (có overflow-y-auto)
-        const messageContainer = bottomRef.current?.parentElement;
-        if (messageContainer) {
-            messageContainer.scrollTo({
-                top: messageContainer.scrollHeight,
-                behavior: "smooth",
-            });
+        if (!containerRef.current) return;
+        containerRef.current.scrollTo({
+            top: containerRef.current.scrollHeight,
+            behavior: 'smooth',
+        });
+    }, [messages]);
+    useEffect(() => {
+        if (replyTo) {
+            inputRef.current?.focus();
         }
-    }, [messages, chatId]);
+    }, [replyTo]);
+
+    const sortedMessages = useMemo(() => {
+        return [...messages].sort((a, b) => {
+            // toMillis() nếu có, fallback 0
+            const ta = a.createdAt?.toMillis?.() ?? 0;
+            const tb = b.createdAt?.toMillis?.() ?? 0;
+            return ta - tb;
+        });
+    }, [messages]);
 
 
-    const handleSend = async () => {
-        if (!text.trim()) return;
+    const handleSend = useCallback(async () => {
+        const trimmed = text.trim();
+        if (!trimmed) return;
+
         if (!chatId || !partnerId) {
-            toast.error("No chat selected");
+            toast.error('No chat selected');
             return;
         }
-        try {
-            await sendMessage(currentUserId, text.trim());
-            console.log("Messages in ChatBox:", messages);
-            setText("");
 
-            // update chat meta: lastMessage + updatedAt
-            const chatRef = doc(db, "chats", chatId);
-            const docSnap = await getDoc(chatRef);
-            if (docSnap.exists()) {
+        setSending(true);
+        try {
+            await sendMessage(
+                currentUserId,
+                trimmed,
+                replyTo
+                    ? { id: replyTo.id, text: replyTo.text, senderId: replyTo.senderId }
+                    : undefined
+            );
+
+            setReplyTo(null);
+            setText('');
+
+            const chatRef = doc(db, 'chats', chatId);
+            const snap = await getDoc(chatRef);
+
+            if (snap.exists()) {
                 await updateDoc(chatRef, {
-                    lastMessage: text.trim(),
+                    lastMessage: trimmed,
                     updatedAt: serverTimestamp(),
                 });
             } else {
-                // create chat doc if missing
                 await setDoc(chatRef, {
                     participants: [currentUserId, partnerId],
-                    lastMessage: text.trim(),
+                    lastMessage: trimmed,
                     updatedAt: serverTimestamp(),
                 });
             }
-        } catch (err: any) {
-            toast.error(err?.message || "Failed to send");
+        } catch (err) {
+            toast.error(getErrorMessage(err));
+        } finally {
+            setSending(false);
         }
-    };
+    }, [text, chatId, partnerId, currentUserId, replyTo, sendMessage]);
 
     return (
-        <div className="flex flex-col bg-white rounded-xl shadow-md border border-gray-200 w-full max-w-3xl h-full overflow-hidden mx-auto">
+        <div className="flex flex-col bg-white rounded-xl shadow-md  w-full max-w-3xl h-full mx-auto overflow-hidden">
             {/* Header */}
-            <div className="p-4 border-b border-gray-200 flex-shrink-0">
-                <div className="font-semibold text-gray-800 text-lg">Chat</div>
+            <div className="p-4 border-b border-gray-200 ">
+                <div className="font-semibold text-lg">Chat</div>
                 <div className="text-sm text-gray-500">
-                    {partnerId ? `With ${partnerId}` : "No partner selected"}
+                    {partnerId ? `With ${chatName}` : 'No partner selected'}
                 </div>
             </div>
 
-            {/* Message List (scrollable only this area) */}
-            <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent bg-gray-50">
-                {messages.map((m: Message) => (
-                    <div
-                        key={m.id}
-                        className={`flex ${
-                            m.senderId === currentUserId ? "justify-end" : "justify-start"
-                        }`}
-                    >
-                        <div
-                            className={`px-4 py-2 rounded-2xl max-w-[70%] text-sm break-words shadow-sm ${
-                                m.senderId === currentUserId
-                                    ? "bg-blue-500 text-white"
-                                    : "bg-gray-200 text-gray-900"
-                            }`}
-                        >
-                            <div>{m.text}</div>
-                            <div className="text-[10px] mt-1 opacity-70 text-right">
-                                {m.createdAt?.toDate
-                                    ? m.createdAt.toDate().toLocaleTimeString([], {
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                    })
-                                    : ""}
-                            </div>
-                        </div>
-                    </div>
-                ))}
-                <div ref={bottomRef} />
+            {/* Messages */}
+            <div
+                ref={containerRef}
+                className="flex-1 overflow-y-auto px-4 py-3 bg-gray-50 space-y-3"
+            >
+                <MessageList
+                    messages={sortedMessages}
+                    currentUserId={currentUserId}
+                    onReply={setReplyTo}
+                />
             </div>
 
-            {/* Input area */}
-            <div className="p-3 border-t border-gray-200 flex-shrink-0 bg-white flex items-center gap-2">
+            {/* Reply bar */}
+            {replyTo && (
+                <div className="px-4 py-2 bg-gray-100 border-t text-sm flex justify-between">
+                    <div className="truncate">
+                        <span className="text-gray-500">Replying to </span>
+                        <span className="font-medium">
+                            {replyTo.senderId === currentUserId ? 'You' : replyTo.senderId}
+                        </span>
+                        : {replyTo.text}
+                    </div>
+                    <button onClick={() => setReplyTo(null)}>✕</button>
+                </div>
+            )}
+
+            {/* Input */}
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    void handleSend();
+                }}
+                className="p-3 border-t border-gray-200 flex gap-2"
+            >
                 <Input
+                    ref={inputRef}
                     value={text}
                     onChange={(e) => setText(e.target.value)}
-                    onPressEnter={handleSend}
                     placeholder="Type a message..."
-                    className="flex-1 rounded-full !bg-gray-50 !border-gray-300"
                 />
-                <Button
-                    type="primary"
-                    onClick={handleSend}
-                    className="rounded-full px-5"
-                >
-                    Send
+                <Button type="primary" htmlType="submit" disabled={sending || !text.trim()}>
+                    {sending ? 'Sending...' : 'Send'}
                 </Button>
-            </div>
+            </form>
         </div>
     );
 }

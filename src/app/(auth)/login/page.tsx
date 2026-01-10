@@ -15,14 +15,18 @@ const Page: React.FC = () => {
             const data = await mutateAsync({ email: values.email });
 
             if (data.success || data.EC === 0) {
-                toast.success(data.message || data.EM || 'Đã gửi mã OTP đến email của bạn!');
+                toast.success(data.message ||  'Đã gửi mã OTP đến email của bạn!');
                 router.push(`/verify?email=${values.email}`);
 
             } else {
-                toast.error(data.message || data.EM || 'Gửi OTP thất bại!');
+                toast.error(data.message || 'Gửi OTP thất bại!');
             }
         } catch (error:any) {
-            toast.error(error.response?.data?.message || 'Lỗi khi gửi mã OTP. Vui lòng thử lại.');
+            const message =
+                error?.response?.data?.message ||
+                error?.message ||
+                'Lỗi khi gửi mã OTP. Vui lòng thử lại.';
+            toast.error(message);
         }
     };
 

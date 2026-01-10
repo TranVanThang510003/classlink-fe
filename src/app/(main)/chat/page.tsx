@@ -7,15 +7,15 @@ import ConversationList from "@/components/ConversationList";
 import ChatBox from "@/components/ChatBox";
 
 // For demo: replace with actual auth user id (from Firebase Auth)
-const DEMO_CURRENT_USER = "user_2";
+const DEMO_CURRENT_USER = "user_1";
 
 export default function ChatPage() {
     const currentUserId = DEMO_CURRENT_USER;
     const conversations = useConversations(currentUserId);
-    const [selectedChat, setSelectedChat] = useState<{ chatId?: string; partnerId?: string }>({});
+    const [selectedChat, setSelectedChat] = useState<{ chatId?: string; partnerId?: string,chatName?: string }>({});
 
-    const handleSelect = (chatId: string, otherId: string) => {
-        setSelectedChat({ chatId, partnerId: otherId });
+    const handleSelect = (chatId: string, otherId: string, chatName: string) => {
+        setSelectedChat({ chatId, partnerId: otherId, chatName });
     };
 
     return (
@@ -35,6 +35,7 @@ export default function ChatPage() {
                         chatId={selectedChat.chatId}
                         currentUserId={currentUserId}
                         partnerId={selectedChat.partnerId}
+                        chatName={selectedChat.chatName}
                     />
                 </div>
             </div>

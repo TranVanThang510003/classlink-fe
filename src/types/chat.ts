@@ -1,4 +1,5 @@
-// types/chat.ts
+
+import type { Timestamp } from 'firebase/firestore';
 export type User = {
     id: string;
     name: string;
@@ -8,8 +9,14 @@ export type User = {
 };
 
 export type Message = {
-    id?: string;
+    id: string;
     senderId: string;
     text: string;
-    createdAt?: any; // Firestore Timestamp or null
+    createdAt?: Timestamp | null;
+    replyTo?: {
+        id: string;
+        text: string;
+        senderId: string;
+    };
+    senderName?: string;
 };

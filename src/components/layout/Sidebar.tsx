@@ -9,7 +9,7 @@ const Sidebar = () => {
   const menuItems = [
     { name: "Manage Students", icon: <FaUsers className="text-[#ff6500]" />, path: "/instructor/manage-students" },
     { name: "Manage Lessons", icon: <FaBook className="text-[#ff6500]" />, path: "/instructor/manage-lessons" },
-    { name: "Message", icon: <FaRegCommentDots className="text-[#ff6500]" />, path: "/instructor/message" },
+    { name: "Message", icon: <FaRegCommentDots className="text-[#ff6500]" />, path: "chat" },
   ];
 
   const handleNavigation = (path: string) => {

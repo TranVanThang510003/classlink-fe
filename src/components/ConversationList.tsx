@@ -3,11 +3,12 @@
 import React from "react";
 import toast from "react-hot-toast";
 import type { ConversationItem } from "@/hooks/useConversations";
+import { FiUsers, FiUser } from 'react-icons/fi';
 
 type Props = {
     items: ConversationItem[];
     currentUserId: string;
-    onSelect: (chatId: string, otherId: string) => void;
+    onSelect: (chatId: string, otherId: string,chatName: string) => void;
     selectedId?: string;
 };
 
@@ -24,24 +25,43 @@ export default function ConversationList({ items, currentUserId, onSelect, selec
             />
             <div className="mt-3 space-y-2">
                 {items.map((c) => {
-                    // pick other participant id
-                    const otherId = c.participants.find((p) => p !== currentUserId) || c.participants[0];
+                    const otherId =
+                        c.participants.find((p) => p !== currentUserId) || c.participants[0];
+
+                    const title = c.isGroup
+                        ? c.nameGroup
+                        : c.userName?.[otherId] || otherId;
+
+
                     return (
                         <div
                             key={c.id}
-                            className={`p-3 rounded-lg cursor-pointer ${selectedId === c.id ? "bg-blue-50 border-l-4 border-blue-500" : "bg-gray-50"}`}
-                            onClick={() => onSelect(c.id, otherId)}
+                            onClick={() => onSelect(c.id, otherId, title as string)}
+
+                            className={`p-3 rounded-lg cursor-pointer ${
+                                selectedId === c.id
+                                    ? "bg-blue-50 border-l-4 border-blue-500"
+                                    : "bg-gray-50"
+                            }`}
                         >
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gray-200" />
-                                <div className="flex-1">
-                                    <div className="font-medium">User {otherId}</div>
-                                    <div className="text-sm text-gray-600 truncate">{c.lastMessage || "No messages yet"}</div>
-                                </div>
+                            {/* TITLE */}
+                            <div className="flex items-center gap-2 font-medium">
+                                {c.isGroup ? (
+                                    <FiUsers className="text-blue-500" size={16} />
+                                ) : (
+                                    <FiUser className="text-gray-500" size={16} />
+                                )}
+
+                                <span className="truncate">{title}</span>
+                            </div>
+
+                            <div className="text-sm text-gray-600 truncate">
+                                {c.lastMessage || "No messages yet"}
                             </div>
                         </div>
                     );
                 })}
+
             </div>
         </div>
     );
