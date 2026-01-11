@@ -60,11 +60,11 @@ export default function ChatBox({ chatId, currentUserId, partnerId,chatName }: P
     const handleSend = useCallback(async () => {
         const trimmed = text.trim();
         if (!trimmed) return;
-
-        if (!chatId || !partnerId) {
-            toast.error('No chat selected');
+        if (!chatId) {
+            toast.error("No chat selected");
             return;
         }
+
 
         setSending(true);
         try {

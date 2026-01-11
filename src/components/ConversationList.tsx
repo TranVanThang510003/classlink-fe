@@ -3,19 +3,35 @@
 import React from "react";
 import toast from "react-hot-toast";
 import type { ConversationItem } from "@/hooks/useConversations";
-import { FiUsers, FiUser } from 'react-icons/fi';
+import {FiUsers, FiUser, FiPlus} from 'react-icons/fi';
 
 type Props = {
     items: ConversationItem[];
     currentUserId: string;
     onSelect: (chatId: string, otherId: string,chatName: string) => void;
     selectedId?: string;
+    canCreateGroup?: boolean;
+    onCreateGroup?: () => void;
 };
 
-export default function ConversationList({ items, currentUserId, onSelect, selectedId }: Props) {
+export default function ConversationList({ items, currentUserId, onSelect, selectedId,
+                                             canCreateGroup = false,
+                                             onCreateGroup, }: Props) {
     return (
         <div className="w-72 p-4 space-y-3 bg-white rounded shadow-sm">
-            <div className="text-sm font-semibold mb-2">All Message</div>
+            <div className="flex items-center justify-between mb-2">
+                <div className="text-sm font-semibold">All Message</div>
+
+                {canCreateGroup && (
+                    <button
+                        onClick={onCreateGroup}
+                        className="p-1 rounded hover:bg-gray-100 text-gray-600"
+                        title="Create group"
+                    >
+                        <FiPlus size={16}/>
+                    </button>
+                )}
+            </div>
             <input
                 className="w-full p-2 rounded border"
                 placeholder="Search..."
@@ -47,9 +63,9 @@ export default function ConversationList({ items, currentUserId, onSelect, selec
                             {/* TITLE */}
                             <div className="flex items-center gap-2 font-medium">
                                 {c.isGroup ? (
-                                    <FiUsers className="text-blue-500" size={16} />
+                                    <FiUsers className="text-blue-500" size={16}/>
                                 ) : (
-                                    <FiUser className="text-gray-500" size={16} />
+                                    <FiUser className="text-gray-500" size={16}/>
                                 )}
 
                                 <span className="truncate">{title}</span>

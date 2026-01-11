@@ -16,7 +16,8 @@ export type ConversationItem = {
     participants: string[];
     lastMessage?: string;
     updatedAt: any;
-
+    classId?: string;
+    createdBy?: string;
     isGroup?: boolean;
     nameGroup?: string;
     userName?: Record<string, string>;
@@ -43,7 +44,10 @@ export function useConversations(currentUserId: string) {
             const userIds = Array.from(
                 new Set(items.flatMap((c) => c.participants))
             );
-
+            if (userIds.length === 0) {
+                setConversations(items);
+                return;
+            }
             // 🔹 query users
             const userSnap = await getDocs(
                 query(
