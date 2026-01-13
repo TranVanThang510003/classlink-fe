@@ -1,49 +1,43 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { FaBell } from "react-icons/fa";
-import {getUserInf} from "@/services/authService";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+
+type User = {
+    name?: string;
+    email?: string;
+};
 
 const Header = () => {
     const router = useRouter();
-    const pathname = usePathname();
-    const [user, setUser] = useState<{ name?: string }>({});
+    const [user, setUser] = useState<User | null>(null);
     const [showMenu, setShowMenu] = useState(false);
 
-    const handleLogout = () => {
+    // 🔐 Firebase Auth Guard
+    useEffect(() => {
+        const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
+            if (!firebaseUser) {
+                router.push("/login");
+                return;
+            }
+
+            // Lấy info từ localStorage (đã lưu lúc verify OTP)
+            const stored = localStorage.getItem("user");
+            if (stored) {
+                setUser(JSON.parse(stored));
+            }
+        });
+
+        return () => unsub();
+    }, []);
+
+    const handleLogout = async () => {
+        await signOut(auth);
         localStorage.removeItem("user");
-        localStorage.removeItem("access_token");
         router.push("/login");
     };
-
-    // Kiểm tra token khi app chạy
-    useEffect(() => {
-        const token = localStorage.getItem("access_token");
-        if (!token) {
-            // Nếu không có token mà không đang ở /login => logout
-            if (pathname !== "/login") handleLogout();
-            return;
-        }
-
-        // Gọi BE để xác thực token và lấy user
-        const verifyToken = async () => {
-            try {
-                const userData = await getUserInf();
-                setUser(userData);
-                localStorage.setItem("user", JSON.stringify(userData));
-
-            } catch (err: any) {
-                console.error("Lỗi xác minh token:", err);
-                // Nếu bị 401 hoặc 403 thì logout
-                if (err.response?.status === 401 || err.response?.status === 403) {
-                    handleLogout();
-                }
-            }
-        };
-
-
-        verifyToken();
-    }, [pathname]);
 
     const firstLetter = user?.name?.[0]?.toUpperCase() || "?";
 
@@ -52,22 +46,19 @@ const Header = () => {
             <div className="flex gap-2 justify-end items-center px-6">
                 <FaBell className="text-gray-400 w-7 h-7" />
 
-                {/* Avatar */}
                 <div className="relative">
                     <div
                         onClick={() => setShowMenu(!showMenu)}
-                        className="w-10 h-10 rounded-full bg-orange-400 text-gray-50 flex items-center justify-center text-lg font-semibold cursor-pointer select-none"
-                        title={user?.name || "User"}
+                        className="w-10 h-10 rounded-full bg-orange-400 text-white flex items-center justify-center text-lg font-semibold cursor-pointer"
                     >
                         {firstLetter}
                     </div>
 
-                    {/* Dropdown */}
                     {showMenu && (
                         <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border p-2 z-10">
                             <button
                                 onClick={handleLogout}
-                                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 text-sm text-gray-700"
+                                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 text-sm"
                             >
                                 Đăng xuất
                             </button>

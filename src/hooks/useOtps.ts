@@ -21,7 +21,7 @@ export const useSendOtp = () => {
     });
 };
 
-// ✅ Xác thực OTP
+//  Xác thực OTP
 export const useVerifyOtp = () => {
     return useMutation({
         mutationFn: async ({ email, code }: OtpVerifyPayload) => {

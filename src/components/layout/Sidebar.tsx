@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FaUsers, FaBook, FaRegCommentDots } from "react-icons/fa";
+import { FaUsers, FaBook, FaRegCommentDots,FaChalkboardTeacher } from "react-icons/fa";
 
 const Sidebar = () => {
   const router = useRouter();
@@ -9,7 +9,8 @@ const Sidebar = () => {
   const menuItems = [
     { name: "Manage Students", icon: <FaUsers className="text-[#ff6500]" />, path: "/instructor/manage-students" },
     { name: "Manage Lessons", icon: <FaBook className="text-[#ff6500]" />, path: "/instructor/manage-lessons" },
-    { name: "Message", icon: <FaRegCommentDots className="text-[#ff6500]" />, path: "chat" },
+    { name: "Manage classes", icon: <FaChalkboardTeacher className="text-[#ff6500]" />, path: "/instructor/manage-classes" },
+    { name: "Message", icon: <FaRegCommentDots className="text-[#ff6500]" />, path: "/chat" },
   ];
 
   const handleNavigation = (path: string) => {

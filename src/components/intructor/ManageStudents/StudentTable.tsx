@@ -11,11 +11,8 @@ const StudentTable: React.FC<Props> = ({ data, loading }) => {
   const columns: ColumnsType<any> = [
     { title: 'Student Name', dataIndex: 'name' },
     { title: 'Email', dataIndex: 'email' },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      render: (s) => <Tag color="green">{s}</Tag>,
-    },
+    { title: 'Phone', dataIndex: 'phone' },
+
     {
       title: 'Action',
       render: () => (

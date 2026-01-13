@@ -20,3 +20,9 @@ export type Message = {
     };
     senderName?: string;
 };
+export type CreateGroupChatPayload = {
+    name: string;
+    teacherId: string;
+    classId: string;
+    studentIds: string[];
+};

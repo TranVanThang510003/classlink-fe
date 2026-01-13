@@ -1,7 +1,9 @@
 'use client';
+
 import { Modal, Input, Checkbox } from "antd";
 import { useState } from "react";
 import { useCreateGroupChat } from "@/hooks/UseCreateGroupChat";
+import toast from "react-hot-toast";
 
 type Props = {
     open: boolean;
@@ -18,25 +20,36 @@ export default function CreateGroupModal({
                                              classId,
                                              students,
                                          }: Props) {
-    const { createGroupChat } = useCreateGroupChat();
+    const { mutateAsync: createGroupChat, isPending } = useCreateGroupChat();
+
     const [name, setName] = useState("");
     const [selected, setSelected] = useState<string[]>([]);
-    const [loading, setLoading] = useState(false);
 
     const handleCreate = async () => {
-        if (!name.trim() || selected.length === 0) return;
+        if (!name.trim()) {
+            toast.error("Please enter group name");
+            return;
+        }
 
-        setLoading(true);
-        await createGroupChat({
-            name,
-            teacherId,
-            classId,
-            studentIds: selected,
-        });
-        setLoading(false);
-        onClose();
-        setName("");
-        setSelected([]);
+        if (selected.length === 0) {
+            toast.error("Please select at least one student");
+            return;
+        }
+
+        try {
+            await createGroupChat({
+                name,
+                teacherId,
+                classId,
+                studentIds: selected,
+            });
+
+            onClose();
+            setName("");
+            setSelected([]);
+        } catch {
+            // error đã được xử lý trong hook
+        }
     };
 
     return (
@@ -45,8 +58,9 @@ export default function CreateGroupModal({
             open={open}
             onOk={handleCreate}
             onCancel={onClose}
-            confirmLoading={loading}
+            confirmLoading={isPending}
             okText="Create"
+            destroyOnHidden
         >
             <Input
                 placeholder="Group name"

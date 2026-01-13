@@ -10,16 +10,16 @@ export const useAddStudent = () => {
     mutationFn: (payload: Student) => addStudent(payload),
 
     onSuccess: (_data, variables) => {
-      console.log("✅ Student added:", variables);
+      console.log(" Student added:", variables);
 
-      // 🔥 invalidate theo class
+      // invalidate theo class
       queryClient.invalidateQueries({
         queryKey: ['students', variables.classId],
       });
     },
 
     onError: (error) => {
-      console.error('❌ Add student failed', error);
+      console.error(' Add student failed', error);
     },
   });
 };

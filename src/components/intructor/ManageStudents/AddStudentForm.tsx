@@ -21,9 +21,8 @@ const AddStudentForm = ({ classId }: Props) => {
 
     const payload: Student = {
       ...values,
-      classId,          // ✅ gắn class
-      role: "student",  // ✅ fix cứng
-      status: "active", // ✅ default
+      classId,
+      role: "student",
     };
 
     mutation.mutate(payload, {
