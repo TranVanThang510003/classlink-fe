@@ -1,5 +1,5 @@
 import StudentTable from '../components/intructor/ManageStudents/StudentTable.tsx'
-import AddStudentForm from "../components/intructor/ManageStudents/AddStudentForm.tsx";
+import AddStudentForm from "../components/intructor/ManageStudents/CreateStudentForm.tsx";
 import { FaSearch } from "react-icons/fa";
 
 import { useState } from 'react'

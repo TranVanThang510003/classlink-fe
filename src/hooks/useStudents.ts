@@ -1,25 +1,35 @@
 // hooks/useStudents.ts
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addStudent } from '@/services/studentsService';
-import type { Student } from '@/types/student';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addStudentsToClass, createStudentAccount  } from "@/services/studentsService";
 
-export const useAddStudent = () => {
+export const useAddStudentsToClass = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: Student) => addStudent(payload),
-
-    onSuccess: (_data, variables) => {
-      console.log(" Student added:", variables);
-
-      // invalidate theo class
+    mutationFn: addStudentsToClass,
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ['students', variables.classId],
+        queryKey: ["students", variables.classId],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["class", variables.classId],
       });
     },
+  });
+};
 
-    onError: (error) => {
-      console.error(' Add student failed', error);
+export const useCreateStudent = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createStudentAccount,
+
+    onSuccess: () => {
+      // reload danh sách students
+      queryClient.invalidateQueries({
+        queryKey: ['students'],
+      });
     },
   });
 };

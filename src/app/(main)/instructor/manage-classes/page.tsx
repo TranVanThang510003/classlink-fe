@@ -1,48 +1,206 @@
+// 'use client';
+//
+// import { useState } from "react";
+// import { useClasses } from "@/hooks/useClasses";
+// import CreateClassModal from "@/components/CreateClassModal";
+//
+// const CURRENT_INSTRUCTOR_ID = "user_1"; // lấy từ auth
+//
+// export default function ManageClassesPage() {
+//     const { classes, loading } = useClasses(CURRENT_INSTRUCTOR_ID);
+//     const [open, setOpen] = useState(false);
+//
+//     return (
+//         <div className="p-6">
+//             <div className="flex justify-between mb-4">
+//                 <h2 className="text-2xl font-semibold">My Classes</h2>
+//                 <button
+//                     className="px-4 py-2 bg-blue-600 text-white rounded"
+//                     onClick={() => setOpen(true)}
+//                 >
+//                     + Create Class
+//                 </button>
+//             </div>
+//
+//             {loading && <div>Loading...</div>}
+//
+//             <ul className="space-y-2">
+//                 {classes.map((c) => (
+//                     <li
+//                         key={c.id}
+//                         className="p-4 border rounded bg-white"
+//                     >
+//                         <div className="font-semibold">{c.name}</div>
+//                         <div className="text-gray-600 text-sm">
+//                             {c.description}
+//                         </div>
+//                     </li>
+//                 ))}
+//             </ul>
+//
+//             <CreateClassModal
+//                 open={open}
+//                 onClose={() => setOpen(false)}
+//                 instructorId={CURRENT_INSTRUCTOR_ID}
+//             />
+//         </div>
+//     );
+// }
 'use client';
 
-import { useState } from "react";
-import { useClasses } from "@/hooks/useClasses";
+import { FaSearch } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { Select, Spin } from "antd";
+
+import AddStudentToClassForm from "@/components/AddStudentToClassForm";
+import StudentTable from "@/components/intructor/ManageStudents/StudentTable";
 import CreateClassModal from "@/components/CreateClassModal";
 
-const CURRENT_INSTRUCTOR_ID = "user_1"; // lấy từ auth
+import { useStudentsByClass } from "@/hooks/useStudentsByClass";
+import { useClasses } from "@/hooks/useClasses";
 
-export default function ManageClassesPage() {
-    const { classes, loading } = useClasses(CURRENT_INSTRUCTOR_ID);
-    const [open, setOpen] = useState(false);
+const ManageClassStudentsPage = () => {
+    const [showAddStudent, setShowAddStudent] = useState(false);
+    const [selectedClassId, setSelectedClassId] = useState<string>();
+    const [instructorId, setInstructorId] = useState<string>();
+    const [openCreateClass, setOpenCreateClass] = useState(false);
+
+    /* =====================
+       1️⃣ Get instructorId (client only)
+    ===================== */
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (!storedUser) return;
+
+        try {
+            const user = JSON.parse(storedUser);
+            if (user?.id) setInstructorId(user.id);
+        } catch {
+            console.error("Invalid user in localStorage");
+        }
+    }, []);
+
+    /* =====================
+       2️⃣ Fetch classes
+    ===================== */
+    const {
+        classes = [],
+        loading: classLoading,
+        error: classError,
+    } = useClasses(instructorId);
+
+    /* =====================
+       3️⃣ Fetch students by class
+    ===================== */
+    const {
+        students = [],
+        loading: studentsLoading,
+    } = useStudentsByClass(selectedClassId);
+
+    if (!instructorId) {
+        return <Spin size="large" className="mt-10" />;
+    }
 
     return (
-        <div className="p-6">
-            <div className="flex justify-between mb-4">
-                <h2 className="text-2xl font-semibold">My Classes</h2>
+        <div className="flex flex-col gap-6">
+            {/* ===== HEADER ===== */}
+            <div className="flex justify-between items-center">
+                <h2 className="text-3xl font-semibold">
+                    Manage Class Students
+                </h2>
+
                 <button
                     className="px-4 py-2 bg-blue-600 text-white rounded"
-                    onClick={() => setOpen(true)}
+                    onClick={() => setOpenCreateClass(true)}
                 >
                     + Create Class
                 </button>
             </div>
 
-            {loading && <div>Loading...</div>}
+            {/* ===== TOOL BAR ===== */}
+            <div className="flex justify-between items-center p-4 border border-gray-100">
+                <div className="text-xl font-semibold">
+                    {selectedClassId
+                        ? `${students.length} students`
+                        : "Select a class to view students"}
+                </div>
 
-            <ul className="space-y-2">
-                {classes.map((c) => (
-                    <li
-                        key={c.id}
-                        className="p-4 border rounded bg-white"
+                <div className="flex gap-2 items-center">
+                    {/* SELECT CLASS */}
+                    <Select
+                        placeholder={classLoading ? "Loading classes..." : "Select class"}
+                        style={{ width: 220 }}
+                        loading={classLoading}
+                        value={selectedClassId}
+                        onChange={setSelectedClassId}
+                        options={classes.map((cls) => ({
+                            value: cls.id,
+                            label: cls.name,
+                        }))}
+                        disabled={classLoading || classes.length === 0}
+                    />
+
+                    {/* ADD STUDENT */}
+                    <button
+                        className="text-blue-600 font-semibold bg-blue-50 border border-blue-500 px-4 py-2 rounded"
+                        onClick={() => setShowAddStudent(true)}
+                        disabled={!selectedClassId}
                     >
-                        <div className="font-semibold">{c.name}</div>
-                        <div className="text-gray-600 text-sm">
-                            {c.description}
-                        </div>
-                    </li>
-                ))}
-            </ul>
+                        + Add Student
+                    </button>
 
+                    {/* FILTER (future) */}
+                    <div className="flex gap-2 bg-gray-50 border border-gray-300 px-3 py-2 rounded items-center">
+                        <FaSearch />
+                        <span>Filter</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* ===== STUDENT TABLE ===== */}
+            {studentsLoading ? (
+                <div className="flex justify-center mt-8">
+                    <Spin size="large" />
+                </div>
+            ) : selectedClassId ? (
+                <StudentTable data={students} loading={false} />
+            ) : (
+                <div className="text-center text-gray-500 mt-10">
+                    Please select a class to view students
+                </div>
+            )}
+
+            {/* ===== ADD STUDENT MODAL ===== */}
+            {showAddStudent && selectedClassId && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <div className="bg-white p-8 rounded-2xl w-full max-w-3xl relative">
+                        <button
+                            onClick={() => setShowAddStudent(false)}
+                            className="absolute top-3 right-4 text-3xl"
+                        >
+                            ×
+                        </button>
+
+                        <AddStudentToClassForm classId={selectedClassId} />
+                    </div>
+                </div>
+            )}
+
+            {/* ===== CREATE CLASS MODAL ===== */}
             <CreateClassModal
-                open={open}
-                onClose={() => setOpen(false)}
-                instructorId={CURRENT_INSTRUCTOR_ID}
+                open={openCreateClass}
+                onClose={() => setOpenCreateClass(false)}
+                instructorId={instructorId}
             />
+
+            {/* ===== ERROR ===== */}
+            {classError && (
+                <div className="text-red-500">
+                    Failed to load classes: {classError.message}
+                </div>
+            )}
         </div>
     );
-}
+};
+
+export default ManageClassStudentsPage;

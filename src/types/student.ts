@@ -1,10 +1,15 @@
-export type Student = {
-    id: string;
+import type { User } from "./user";
+
+export type Student = User & {
+    role: "student";
+};
+export type CreateStudentPayload = {
     name: string;
     email: string;
-    address: string;
     phone: string;
+    address: string;
+};
+export type AddStudentToClassPayload = {
+    studentId: string;
     classId: string;
-    role:"student";
-}
-
+};
