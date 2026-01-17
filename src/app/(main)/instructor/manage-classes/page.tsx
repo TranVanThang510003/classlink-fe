@@ -98,7 +98,12 @@ const ManageClassStudentsPage = () => {
     } = useStudentsByClass(selectedClassId);
 
     if (!instructorId) {
-        return <Spin size="large" className="mt-10" />;
+            return (
+                <div className="flex h-[60vh] items-center justify-center">
+                    <Spin size="large" />
+                </div>
+            );
+
     }
 
     return (
@@ -165,9 +170,10 @@ const ManageClassStudentsPage = () => {
             ) : selectedClassId ? (
                 <StudentTable data={students} loading={false} />
             ) : (
-                <div className="text-center text-gray-500 mt-10">
+                <div className="text-center text-gray-400 italic mt-10">
                     Please select a class to view students
                 </div>
+
             )}
 
             {/* ===== ADD STUDENT MODAL ===== */}

@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { ReactQueryProvider } from '@/app/(main)/providers/ReactQueryProvider'
-import { AntdRegistry } from '@ant-design/nextjs-registry';
+import AntdProvider  from './providers/AntdProvider';
 import Header from "@/components/layout/Header";
 import Sidebar from "@/components/layout/Sidebar";
 import {Toaster} from "react-hot-toast";
@@ -34,7 +34,8 @@ const RootLayout = ({ children }: React.PropsWithChildren) =>  {
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
         <ReactQueryProvider>
-            <AntdRegistry>
+            < AntdProvider>
+
                         <div className="flex h-screen">
                             <Toaster position="top-right" reverseOrder={false} />
                             <Sidebar />
@@ -46,7 +47,7 @@ const RootLayout = ({ children }: React.PropsWithChildren) =>  {
                             </div>
                         </div>
 
-            </AntdRegistry>
+            </AntdProvider>
         </ReactQueryProvider>
         </body>
         </html>

@@ -3,7 +3,7 @@
 import { FaSearch } from "react-icons/fa";
 import {useEffect, useState} from "react";
 import { Spin } from "antd";
-
+import { Skeleton } from "antd";
 import CreateStudentForm from "@/components/intructor/ManageStudents/CreateStudentForm";
 import StudentTable from "@/components/intructor/ManageStudents/StudentTable";
 
@@ -34,7 +34,14 @@ const ManageStudentPage = () => {
     } = useStudentsByInstructor(instructorId);
 
 
+   if (!instructorId){
+      return (
+          <div className="flex h-[60vh] items-center justify-center">
+              <Spin size="large" />
+          </div>
+      );
 
+  }
 
     return (
         <div className="flex flex-col">
@@ -67,7 +74,7 @@ const ManageStudentPage = () => {
 
             {/* STUDENT TABLE */}
             {isLoading ? (
-                <Spin size="large" />
+                <Skeleton active paragraph={{ rows: 6 }} />
             ) : (
                 <StudentTable data={students} loading={isLoading} />
             )}

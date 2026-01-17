@@ -1,10 +1,12 @@
 'use client';
+import { useMyClasses } from "@/hooks/useMyClasses";
 import React, { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { useConversations } from "@/hooks/useConversations";
 import ConversationList from "@/components/ConversationList";
 import ChatBox from "@/components/ChatBox";
 import CreateGroupModal from "@/components/CreateGroupModal";
+import {Spin} from "antd";
 
 type User = {
     id: string;
@@ -13,13 +15,7 @@ type User = {
     role: "student" | "instructor";
 };
 
-// DEMO class + students (sau này lấy từ API)
-const DEMO_CLASS_ID = "class_10A1";
-const DEMO_STUDENTS = [
-    { id: "user_2", name: "Student A" },
-    { id: "user_3", name: "Student B" },
-    { id: "user_4", name: "Student C" },
-];
+
 
 export default function ChatPage() {
     const [user, setUser] = useState<User | null>(null);
@@ -44,6 +40,7 @@ export default function ChatPage() {
     const isTeacher = user?.role === "instructor";
 
     const conversations = useConversations(currentUserId || "");
+    const classes = useMyClasses(currentUserId);
 
     const handleSelect = (chatId: string, otherId: string, chatName: string) => {
         setSelectedChat({
@@ -54,7 +51,12 @@ export default function ChatPage() {
     };
 
     if (!user) {
-        return <div className="p-6">Loading...</div>;
+        return (
+            <div className="flex h-[60vh] items-center justify-center">
+                <Spin size="large" />
+            </div>
+        );
+
     }
 
     return (
@@ -88,12 +90,14 @@ export default function ChatPage() {
             {/* CREATE GROUP MODAL – CHỈ INSTRUCTOR THẤY */}
             {isTeacher && (
                 <CreateGroupModal
-                    open={openCreateGroup}
-                    onClose={() => setOpenCreateGroup(false)}
-                    teacherId={currentUserId!}
-                    classId={DEMO_CLASS_ID}
-                    students={DEMO_STUDENTS}
-                />
+                open={openCreateGroup}
+                onClose={() => setOpenCreateGroup(false)}
+                teacherId={currentUserId!}
+                classes={classes.map((c) => ({
+                    id: c.id,
+                    name: c.name,
+                }))}
+            />
             )}
         </>
     );
