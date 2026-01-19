@@ -3,11 +3,10 @@
 import { Modal, Input, DatePicker, Upload, Button } from "antd";
 import type { UploadFile } from "antd/es/upload/interface";
 import { useState } from "react";
-import toast from "react-hot-toast";
-import { getAuth } from "firebase/auth";
 import dayjs from "dayjs";
+import { getAuth } from "firebase/auth";
 
-import { createAssignment } from "@/services/assignmentService";
+import { useCreateAssignment } from "@/hooks/useCreateAssignment";
 
 const { TextArea } = Input;
 
@@ -28,34 +27,27 @@ export default function CreateAssignmentModal({
     const auth = getAuth();
     const user = auth.currentUser;
 
+    const { createAssignment, loading } = useCreateAssignment();
+
     if (!user) return null;
 
     const handleCreate = async () => {
-        if (!classId || !title.trim()) {
-            toast.error("Title is required");
-            return;
-        }
+        if (!classId || !title.trim()) return;
 
-        try {
-            await createAssignment({
-                classId,
-                title,
-                description,
-                dueDate: dueDate ? dueDate.toDate() : null,
-                files, // 👉 sau này upload lên Firebase Storage
-                createdBy: user.uid,
-            });
+        await createAssignment({
+            classId,
+            title,
+            description,
+            dueDate: dueDate ? dueDate.toDate() : null,
+            files,
+            createdBy: user.uid,
+        });
 
-            toast.success("Assignment created");
-            setTitle("");
-            setDescription("");
-            setDueDate(null);
-            setFiles([]);
-            onClose();
-        } catch (err) {
-            console.log(err);
-            toast.error("Failed to create assignment");
-        }
+        setTitle("");
+        setDescription("");
+        setDueDate(null);
+        setFiles([]);
+        onClose();
     };
 
     return (
@@ -63,7 +55,7 @@ export default function CreateAssignmentModal({
             open={open}
             onOk={handleCreate}
             onCancel={onClose}
-            okText="Create"
+            confirmLoading={loading}
             title="Create Assignment"
         >
             <div className="flex flex-col gap-4">
@@ -74,7 +66,7 @@ export default function CreateAssignmentModal({
                 />
 
                 <TextArea
-                    placeholder="Assignment description (optional)"
+                    placeholder="Assignment description"
                     rows={4}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -82,7 +74,6 @@ export default function CreateAssignmentModal({
 
                 <DatePicker
                     className="w-full"
-                    placeholder="Due date"
                     showTime
                     value={dueDate}
                     onChange={setDueDate}
@@ -91,18 +82,13 @@ export default function CreateAssignmentModal({
                     }
                 />
 
-                {/* FILE UPLOAD (ĐỀ BÀI) */}
                 <Upload
                     fileList={files}
-                    beforeUpload={() => false} // ❗ chưa upload ngay
+                    beforeUpload={() => false}
                     onChange={({ fileList }) => setFiles(fileList)}
                 >
                     <Button>Upload assignment file</Button>
                 </Upload>
-
-                <div className="text-xs text-gray-400">
-                    Supported: PDF, DOCX, ZIP
-                </div>
             </div>
         </Modal>
     );

@@ -17,6 +17,12 @@ export async function createAssignment(payload: {
     classId: string;
     title: string;
     description?: string;
+    attachments?: {
+        fileUrl: string;
+        fileName: string;
+        fileType: string;
+        fileSize: number;
+    }[];
     dueDate?: Date | null;
     createdBy: string;
 }) {

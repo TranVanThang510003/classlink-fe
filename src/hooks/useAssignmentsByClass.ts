@@ -5,21 +5,25 @@ import {
     orderBy,
     query,
     where,
+    Timestamp,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
-export interface Assignment {
-    id: string;
-    classId: string;
-    title: string;
-    description?: string;
-    status: "draft" | "published";
-    dueDate?: any;
-    createdBy: string;
-    createdAt?: any;
-    updatedAt?: any;
+import type { Assignment } from "@/types/assignment";
+
+/* =======================
+   HELPER
+======================= */
+function toDate(value: any): Date | null {
+    if (!value) return null;
+    if (value instanceof Timestamp) return value.toDate();
+    if (value instanceof Date) return value;
+    return null;
 }
 
+/* =======================
+   HOOK
+======================= */
 export function useAssignmentsByClass(classId?: string) {
     const [assignments, setAssignments] = useState<Assignment[]>([]);
     const [loading, setLoading] = useState(false);
@@ -41,10 +45,26 @@ export function useAssignmentsByClass(classId?: string) {
         const unsub = onSnapshot(
             q,
             (snap) => {
-                const data: Assignment[] = snap.docs.map((doc) => ({
-                    id: doc.id,
-                    ...(doc.data() as Omit<Assignment, "id">),
-                }));
+                const data: Assignment[] = snap.docs.map((doc) => {
+                    const raw = doc.data();
+
+                    return {
+                        id: doc.id,
+                        classId: raw.classId,
+                        title: raw.title,
+                        description: raw.description,
+                        status: raw.status,
+                        createdBy: raw.createdBy,
+
+                        // ✅ FILE ATTACHMENTS
+                        attachments: raw.attachments ?? [],
+
+                        // ✅ DATE
+                        dueDate: toDate(raw.dueDate),
+                        createdAt: toDate(raw.createdAt),
+                    };
+                });
+
                 setAssignments(data);
                 setLoading(false);
             },
