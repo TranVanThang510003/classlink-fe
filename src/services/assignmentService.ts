@@ -72,15 +72,28 @@ export async function deleteAssignment(assignmentId: string) {
 
 export async function submitAssignment(payload: {
     assignmentId: string;
-    studentId: string;
-    classId: string;
-    fileUrl: string;
-    fileName: string;
+    classId: string; // 🔥 BẮT BUỘC
+    content: string;
+    attachments: any[];
+    submittedBy: string;
 }) {
-    return addDoc(collection(db, "assignment_submissions"), {
-        ...payload,
-        status: "submitted",
+    const docData = {
+        assignmentId: payload.assignmentId,
+        classId: payload.classId,
+
+        content: payload.content || "",
+
+        attachments: payload.attachments ?? [],
+
+        submittedBy: payload.submittedBy,
         submittedAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-    });
+
+        // ❌ KHÔNG thêm score, teacherComment lúc submit
+    };
+    console.log("SUBMIT PAYLOAD:", payload);
+
+    return addDoc(
+        collection(db, "assignmentSubmissions"),
+        docData
+    );
 }

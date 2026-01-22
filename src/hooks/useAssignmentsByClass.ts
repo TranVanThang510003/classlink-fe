@@ -24,23 +24,40 @@ function toDate(value: any): Date | null {
 /* =======================
    HOOK
 ======================= */
-export function useAssignmentsByClass(classId?: string) {
+export function useAssignmentsByClass(
+    classId?: string,
+    role: "instructor" | "student" = "student"
+) {
     const [assignments, setAssignments] = useState<Assignment[]>([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (!classId) {
             setAssignments([]);
+            setLoading(false);
             return;
         }
 
         setLoading(true);
 
-        const q = query(
-            collection(db, "assignments"),
+        // ✅ Query khác nhau theo ROLE
+        const baseQuery = [
             where("classId", "==", classId),
-            orderBy("createdAt", "desc")
-        );
+            orderBy("createdAt", "desc"),
+        ];
+
+        const q =
+            role === "student"
+                ? query(
+                    collection(db, "assignments"),
+                    where("classId", "==", classId),
+                    where("status", "==", "published"), // 🔥 QUAN TRỌNG
+                    orderBy("createdAt", "desc")
+                )
+                : query(
+                    collection(db, "assignments"),
+                    ...baseQuery
+                );
 
         const unsub = onSnapshot(
             q,
@@ -55,11 +72,7 @@ export function useAssignmentsByClass(classId?: string) {
                         description: raw.description,
                         status: raw.status,
                         createdBy: raw.createdBy,
-
-                        // ✅ FILE ATTACHMENTS
                         attachments: raw.attachments ?? [],
-
-                        // ✅ DATE
                         dueDate: toDate(raw.dueDate),
                         createdAt: toDate(raw.createdAt),
                     };
@@ -70,15 +83,13 @@ export function useAssignmentsByClass(classId?: string) {
             },
             (err) => {
                 console.error("Failed to fetch assignments", err);
+                setAssignments([]);
                 setLoading(false);
             }
         );
 
         return () => unsub();
-    }, [classId]);
+    }, [classId, role]);
 
-    return {
-        assignments,
-        loading,
-    };
+    return { assignments, loading };
 }

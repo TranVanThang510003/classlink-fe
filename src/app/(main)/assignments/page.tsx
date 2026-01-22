@@ -3,8 +3,11 @@
 import { Button, Select, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
+import { db } from "@/lib/firebase";
 import { useMyClasses } from "@/hooks/useMyClasses";
+import { useMyLearningClasses } from "@/hooks/useMyLearningClasses";
 import { useAssignmentsByClass } from "@/hooks/useAssignmentsByClass";
 
 import AssignmentList from "@/components/assigments/AssignmentList";
@@ -13,24 +16,49 @@ import CreateAssignmentModal from "@/components/assigments/CreateAssignmentModal
 export default function AssignmentManagementPage() {
     const [classId, setClassId] = useState<string>();
     const [user, setUser] = useState<any>(null);
+    const [role, setRole] = useState<"student" | "instructor" | null>(null);
     const [openCreate, setOpenCreate] = useState(false);
 
     const auth = getAuth();
+    console.log(auth);
 
+    // 🔐 Auth
     useEffect(() => {
-        const unsub = onAuthStateChanged(auth, (firebaseUser) => {
+        const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
             setUser(firebaseUser);
+
+            if (firebaseUser) {
+                const snap = await getDoc(
+                    doc(db, "users", firebaseUser.uid)
+                );
+                setRole(snap.data()?.role ?? null);
+            }
         });
+
         return () => unsub();
     }, []);
 
-    const instructorId = user?.uid;
+    // 👨‍🏫 Instructor
+    const teachingClasses = useMyClasses(
+        role === "instructor" ? user?.uid : undefined
+    );
 
-    const classes = useMyClasses(instructorId);
-    const { assignments, loading } = useAssignmentsByClass(classId);
+    // 👩‍🎓 Student
+    const learningClasses = useMyLearningClasses(
+        role === "student" ? user?.uid : undefined
+    );
 
-    // ===== AUTH LOADING =====
-    if (!user) {
+    const classes =
+        role === "instructor" ? teachingClasses : learningClasses;
+
+    const { assignments, loading } = useAssignmentsByClass(
+        classId,
+        role ?? "student"
+    );
+
+
+    // ⏳ Loading
+    if (!user || !role) {
         return (
             <div className="flex h-[60vh] items-center justify-center">
                 <Spin size="large" />
@@ -43,7 +71,9 @@ export default function AssignmentManagementPage() {
             {/* ===== HEADER ===== */}
             <div>
                 <h2 className="text-3xl font-semibold mb-6">
-                    Manage Assignments
+                    {role === "instructor"
+                        ? "Manage Assignments"
+                        : "My Assignments"}
                 </h2>
 
                 <div className="flex gap-3 justify-end">
@@ -58,13 +88,16 @@ export default function AssignmentManagementPage() {
                         }))}
                     />
 
-                    <Button
-                        type="primary"
-                        onClick={() => setOpenCreate(true)}
-                        disabled={!classId}
-                    >
-                        + Create Assignment
-                    </Button>
+                    {/* ❌ Student không được tạo bài */}
+                    {role === "instructor" && (
+                        <Button
+                            type="primary"
+                            onClick={() => setOpenCreate(true)}
+                            disabled={!classId}
+                        >
+                            + Create Assignment
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -77,16 +110,18 @@ export default function AssignmentManagementPage() {
                 <AssignmentList assignments={assignments} />
             ) : (
                 <div className="text-center text-gray-400 italic mt-10">
-                    Please select a class to manage assignments
+                    Please select a class
                 </div>
             )}
 
-            {/* ===== MODAL ===== */}
-            <CreateAssignmentModal
-                open={openCreate}
-                onClose={() => setOpenCreate(false)}
-                classId={classId}
-            />
+            {/* ===== MODAL (Instructor only) ===== */}
+            {role === "instructor" && (
+                <CreateAssignmentModal
+                    open={openCreate}
+                    onClose={() => setOpenCreate(false)}
+                    classId={classId}
+                />
+            )}
         </div>
     );
 }
