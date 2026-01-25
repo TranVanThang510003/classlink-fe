@@ -1,7 +1,7 @@
 
 'use client';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useMessages } from '@/hooks/useMessages';
+import { useMessages } from '@/hooks/message/useMessages';
 import type { Message } from '@/types/chat';
 import { Button, Input,InputRef } from 'antd';
 
@@ -129,7 +129,7 @@ export default function ChatBox({ chatId, currentUserId, partnerId,chatName }: P
                     <div className="truncate">
                         <span className="text-gray-500">Replying to </span>
                         <span className="font-medium">
-                            {replyTo.senderId === currentUserId ? 'You' : replyTo.senderId}
+                            {replyTo.senderId === currentUserId ? 'You' : replyTo.senderName}
                         </span>
                         : {replyTo.text}
                     </div>

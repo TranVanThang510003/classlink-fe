@@ -70,3 +70,15 @@ export type CreateAssignmentPayload = {
     status: "draft" | "published";
     createdBy: string;
 };
+
+
+export type TeacherSubmissionListItem = {
+    id: string;
+    assignmentId: string;
+    classId: string;
+    submittedBy: string;
+    studentName?: string;
+    submittedAt: Date | null;
+    score?: number;
+    feedback?: string;
+};

@@ -52,12 +52,12 @@ import { FaSearch } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { Select, Spin } from "antd";
 
-import AddStudentToClassForm from "@/components/AddStudentToClassForm";
+import AddStudentToClassForm from "@/components/intructor/ManageClasses/AddStudentToClassForm";
 import StudentTable from "@/components/intructor/ManageStudents/StudentTable";
-import CreateClassModal from "@/components/CreateClassModal";
+import CreateClassModal from "@/components/intructor/ManageClasses/CreateClassModal";
 
-import { useStudentsByClass } from "@/hooks/useStudentsByClass";
-import { useClasses } from "@/hooks/useClasses";
+import { useStudentsByClass } from "@/hooks/student/useStudentsByClass";
+import { useClasses } from "@/hooks/class/useClasses";
 
 const ManageClassStudentsPage = () => {
     const [showAddStudent, setShowAddStudent] = useState(false);

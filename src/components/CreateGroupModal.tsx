@@ -3,8 +3,8 @@
 import { Modal, Input, Checkbox, Select, Spin } from "antd";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useCreateGroupChat } from "@/hooks/UseCreateGroupChat";
-import { useStudentsByClass } from "@/hooks/useStudentsByClass";
+import { useCreateGroupChat } from "@/hooks/message/UseCreateGroupChat";
+import { useStudentsByClass } from "@/hooks/student/useStudentsByClass";
 
 type Props = {
     open: boolean;
@@ -44,11 +44,18 @@ export default function CreateGroupModal({
             return;
         }
 
+        const selectedStudents = students.filter(s =>
+            selected.includes(s.id)
+        );
+
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+
         await mutateAsync({
             name,
             teacherId,
+            teacherName: user.name,
             classId,
-            studentIds: selected,
+            students: selectedStudents, // [{ id, name }]
         });
 
         onClose();
@@ -56,6 +63,7 @@ export default function CreateGroupModal({
         setSelected([]);
         setClassId(undefined);
     };
+
 
     return (
         <Modal

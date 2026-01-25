@@ -6,9 +6,9 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
-import { useMyClasses } from "@/hooks/useMyClasses";
-import { useMyLearningClasses } from "@/hooks/useMyLearningClasses";
-import { useAssignmentsByClass } from "@/hooks/useAssignmentsByClass";
+import { useMyClasses } from "@/hooks/class/useMyClasses";
+import { useMyLearningClasses } from "@/hooks/class/useMyLearningClasses";
+import { useAssignmentsByClass } from "@/hooks/assigment/useAssignmentsByClass";
 
 import AssignmentList from "@/components/assigments/AssignmentList";
 import CreateAssignmentModal from "@/components/assigments/CreateAssignmentModal";

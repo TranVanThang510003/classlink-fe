@@ -11,15 +11,17 @@ export type User = {
 export type Message = {
     id: string;
     senderId: string;
+    senderName: string; // ✅
     text: string;
-    createdAt?: Timestamp | null;
     replyTo?: {
         id: string;
         text: string;
         senderId: string;
-    };
-    senderName?: string;
+        senderName: string; // ✅
+    } | null;
+    createdAt: any;
 };
+
 export type CreateGroupChatPayload = {
     name: string;
     teacherId: string;

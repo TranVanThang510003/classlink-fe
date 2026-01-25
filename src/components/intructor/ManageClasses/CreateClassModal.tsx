@@ -2,7 +2,7 @@
 
 import { Modal, Input } from "antd";
 import { useState } from "react";
-import { useCreateClass } from "@/hooks/useCreateClass";
+import { useCreateClass } from "@/hooks/class/useCreateClass";
 
 type Props = {
     open: boolean;

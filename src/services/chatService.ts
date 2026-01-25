@@ -16,15 +16,38 @@ import  type { CreateGroupChatPayload } from "@/types/chat";
 export const createGroupChatService = async ({
                                                  name,
                                                  teacherId,
+                                                 teacherName,
                                                  classId,
-                                                 studentIds,
-                                             }: CreateGroupChatPayload): Promise<string> => {
+                                                 students, // [{ id, name }]
+                                             }: {
+    name: string;
+    teacherId: string;
+    teacherName: string;
+    classId: string;
+    students: { id: string; name: string }[];
+}): Promise<string> => {
+
+    const participants = [teacherId, ...students.map(s => s.id)];
+
+    const userNameMap: Record<string, string> = {
+        [teacherId]: teacherName,
+    };
+
+    students.forEach(s => {
+        userNameMap[s.id] = s.name;
+    });
+    console.log("teacherName:", teacherName);
+    console.log("students:", students);
+    console.log("userNameMap:", userNameMap);
+
+
     const docRef = await addDoc(collection(db, "chats"), {
         isGroup: true,
         nameGroup: name,
         classId,
         createdBy: teacherId,
-        participants: [teacherId, ...studentIds],
+        participants,
+        userName: userNameMap, // ✅ SNAPSHOT
         lastMessage: "",
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -32,6 +55,7 @@ export const createGroupChatService = async ({
 
     return docRef.id;
 };
+
 
 
 export function subscribeMessages(
@@ -43,57 +67,34 @@ export function subscribeMessages(
         orderBy("createdAt", "asc")
     );
 
-    return onSnapshot(q, async (snap) => {
-        const raw = snap.docs.map(
+    return onSnapshot(q, (snap) => {
+        const messages = snap.docs.map(
             (d) => ({ id: d.id, ...d.data() })
         ) as Message[];
 
-        const userIds = Array.from(
-            new Set(
-                raw.flatMap((m) =>
-                    [m.senderId, m.replyTo?.senderId].filter(Boolean)
-                )
-            )
-        ) as string[];
-
-        let nameMap: Record<string, string> = {};
-
-        if (userIds.length > 0) {
-            const userSnap = await getDocs(
-                query(
-                    collection(db, "users"),
-                    where("__name__", "in", userIds)
-                )
-            );
-
-            userSnap.docs.forEach((d) => {
-                nameMap[d.id] = d.data().name;
-            });
-        }
-
-        callback(
-            raw.map((m) => ({
-                ...m,
-                senderName: nameMap[m.senderId] ?? m.senderId,
-            }))
-        );
+        callback(messages);
     });
 }
+
 
 export async function sendMessageService(
     chatId: string,
     data: {
         senderId: string;
+        senderName: string; // ✅ thêm
         text: string;
         replyTo?: {
             id: string;
             text: string;
             senderId: string;
+            senderName: string; // ✅ snapshot luôn
         };
     }
 ) {
     await addDoc(collection(db, "chats", chatId, "messages"), {
-        ...data,
+        senderId: data.senderId,
+        senderName: data.senderName,
+        text: data.text,
         replyTo: data.replyTo || null,
         createdAt: serverTimestamp(),
     });

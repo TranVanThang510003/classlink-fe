@@ -2,7 +2,7 @@
 'use client';
 import React from "react";
 import toast from "react-hot-toast";
-import type { ConversationItem } from "@/hooks/useConversations";
+import type { ConversationItem } from "@/hooks/message/useConversations";
 import {FiUsers, FiUser, FiPlus} from 'react-icons/fi';
 
 type Props = {

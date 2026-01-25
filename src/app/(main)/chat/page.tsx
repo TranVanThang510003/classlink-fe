@@ -1,25 +1,27 @@
 'use client';
-import { useMyClasses } from "@/hooks/useMyClasses";
+import { useMyClasses } from "@/hooks/class/useMyClasses";
 import React, { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
-import { useConversations } from "@/hooks/useConversations";
+import { useConversations } from "@/hooks/message/useConversations";
 import ConversationList from "@/components/ConversationList";
 import ChatBox from "@/components/ChatBox";
 import CreateGroupModal from "@/components/CreateGroupModal";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 import {Spin} from "antd";
 
 type User = {
-    id: string;
-    email: string;
-    name: string;
+    uid: string;
     role: "student" | "instructor";
+    name?: string;
+    email?: string;
 };
 
 
 
 export default function ChatPage() {
     const [user, setUser] = useState<User | null>(null);
-
+    const [loading, setLoading] = useState(true);
     const [selectedChat, setSelectedChat] = useState<{
         chatId?: string;
         partnerId?: string;
@@ -28,15 +30,32 @@ export default function ChatPage() {
 
     const [openCreateGroup, setOpenCreateGroup] = useState(false);
 
-    // 🔑 LẤY USER TỪ LOCALSTORAGE
+// 🔐 AUTH LISTENER
     useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, []);
+        const auth = getAuth();
 
-    const currentUserId = user?.id;
+        const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
+            if (!firebaseUser) {
+                setUser(null);
+                setLoading(false);
+                return;
+            }
+
+            const tokenResult = await firebaseUser.getIdTokenResult();
+
+            setUser({
+                uid: firebaseUser.uid,
+                role: tokenResult.claims.role as "student" | "instructor",
+                email: firebaseUser.email ?? undefined,
+            });
+            console.log("User set in chat page:", firebaseUser.uid, tokenResult.claims.role);
+
+            setLoading(false);
+        });
+
+        return () => unsub();
+    }, []);
+    const currentUserId = user?.uid;
     const isTeacher = user?.role === "instructor";
 
     const conversations = useConversations(currentUserId || "");

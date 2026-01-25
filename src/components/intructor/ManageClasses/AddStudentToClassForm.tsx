@@ -3,9 +3,9 @@
 import { Button, Form, Checkbox } from "antd";
 import toast from "react-hot-toast";
 
-import { useAddStudentsToClass } from "@/hooks/useStudents";
-import { useStudentsByInstructor } from "@/hooks/useStudentQuery";
-import { useStudentsByClass } from "@/hooks/useStudentsByClass";
+import { useAddStudentsToClass } from "@/hooks/student/useStudents";
+import { useStudentsByInstructor } from "@/hooks/student/useStudentQuery";
+import { useStudentsByClass } from "@/hooks/student/useStudentsByClass";
 
 type Props = {
     classId: string;

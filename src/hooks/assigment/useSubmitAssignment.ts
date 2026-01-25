@@ -40,7 +40,9 @@ export function useSubmitAssignment() {
                                 return result; // 👈 dùng thẳng
                             })
                         )
-                    ).filter(Boolean)
+                    ).filter(
+                        (item): item is AssignmentSubmissionAttachment =>
+                        item !== null)
                     : [];
 
             /* =============================

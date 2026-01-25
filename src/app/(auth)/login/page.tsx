@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button, Form, Input } from 'antd';
-import { useSendOtp } from '@/hooks/useOtps';
+import { useSendOtp } from '@/hooks/auth/useOtps';
 import toast from 'react-hot-toast';
 import { useRouter } from "next/navigation";
 const Page: React.FC = () => {

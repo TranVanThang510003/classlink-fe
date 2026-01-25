@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Form, Input } from 'antd';
-import { useCreateStudent } from "@/hooks/useStudents";
+import { useCreateStudent } from "@/hooks/student/useStudents";
 import type { CreateStudentPayload } from '@/types/student';
 import toast from "react-hot-toast";
 

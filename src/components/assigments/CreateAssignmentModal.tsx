@@ -6,7 +6,7 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import { getAuth } from "firebase/auth";
 
-import { useCreateAssignment } from "@/hooks/useCreateAssignment";
+import { useCreateAssignment } from "@/hooks/assigment/useCreateAssignment";
 
 const { TextArea } = Input;
 

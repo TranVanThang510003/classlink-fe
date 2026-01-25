@@ -16,7 +16,9 @@ import Color from "@tiptap/extension-color";
 import TextAlign from "@tiptap/extension-text-align";
 import Heading from "@tiptap/extension-heading";
 
-import { useSubmitAssignment } from "@/hooks/useSubmitAssignment";
+import { useSubmitAssignment } from "@/hooks/assigment/useSubmitAssignment";
+import {doc, getDoc} from "firebase/firestore";
+import {db} from "@/lib/firebase";
 
 /* =======================
    TYPES
@@ -140,6 +142,10 @@ export default function SubmitAssignment({
     if (!editor || !user) return null;
 
     const handleSubmit = async () => {
+        const token = await user.getIdTokenResult();
+        console.log("🔥 TOKEN:", token.claims);
+        const classSnap = await getDoc(doc(db, "classes", classId));
+        console.log("CLASS DATA:", classSnap.data());
         if (!classId) {
             toast.error("Missing classId");
             return;

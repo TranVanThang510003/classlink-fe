@@ -7,7 +7,7 @@ import { Skeleton } from "antd";
 import CreateStudentForm from "@/components/intructor/ManageStudents/CreateStudentForm";
 import StudentTable from "@/components/intructor/ManageStudents/StudentTable";
 
-import { useStudentsByInstructor } from "@/hooks/useStudentQuery";
+import { useStudentsByInstructor } from "@/hooks/student/useStudentQuery";
 
 
 const ManageStudentPage = () => {
