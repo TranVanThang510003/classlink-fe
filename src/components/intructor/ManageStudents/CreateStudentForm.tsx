@@ -12,7 +12,7 @@ const CreateStudentForm = () => {
     const onFinish = (values: CreateStudentPayload) => {
         mutation.mutate(values, {
             onSuccess: (data: any) => {
-                toast.success(data?.message || "Student account created successfully!");
+                toast.success(data?.message || "student account created successfully!");
                 form.resetFields();
             },
             onError: (error: any) => {

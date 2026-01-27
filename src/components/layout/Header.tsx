@@ -1,9 +1,10 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { FaBell } from "react-icons/fa";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { FaBell } from 'react-icons/fa';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 type User = {
     name?: string;
@@ -15,16 +16,17 @@ const Header = () => {
     const [user, setUser] = useState<User | null>(null);
     const [showMenu, setShowMenu] = useState(false);
 
-    // 🔐 Firebase Auth Guard
+    /* =========================
+       AUTH GUARD
+    ========================= */
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
             if (!firebaseUser) {
-                router.push("/login");
+                router.push('/login');
                 return;
             }
 
-            // Lấy info từ localStorage (đã lưu lúc verify OTP)
-            const stored = localStorage.getItem("user");
+            const stored = localStorage.getItem('user');
             if (stored) {
                 setUser(JSON.parse(stored));
             }
@@ -35,30 +37,52 @@ const Header = () => {
 
     const handleLogout = async () => {
         await signOut(auth);
-        localStorage.removeItem("user");
-        router.push("/login");
+        localStorage.removeItem('user');
+        router.push('/login');
     };
 
-    const firstLetter = user?.name?.[0]?.toUpperCase() || "?";
+    const firstLetter = user?.name?.[0]?.toUpperCase() || '?';
 
     return (
-        <div className="w-full py-4 relative">
-            <div className="flex gap-2 justify-end items-center px-6">
-                <FaBell className="text-gray-400 w-7 h-7" />
+        <header className="
+              w-full h-14
+              bg-white
+              border-b border-gray-200
+              shadow-sm
+              flex items-center justify-between
+              px-6
+              relative z-20
+            ">
+
+            {/* ===== LEFT: LOGO ===== */}
+            <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded bg-blue-900 flex items-center justify-center text-white font-bold">
+                    M
+                </div>
+                <span className="font-semibold text-gray-800">
+                    M
+                </span>
+            </div>
+
+
+
+            {/* ===== RIGHT: USER ===== */}
+            <div className="flex items-center gap-5 relative">
+                <FaBell className="text-gray-400 w-5 h-5 cursor-pointer"/>
 
                 <div className="relative">
                     <div
                         onClick={() => setShowMenu(!showMenu)}
-                        className="w-10 h-10 rounded-full bg-orange-400 text-white flex items-center justify-center text-lg font-semibold cursor-pointer"
+                        className="w-9 h-9 rounded-full bg-orange-400 text-white flex items-center justify-center font-semibold cursor-pointer"
                     >
                         {firstLetter}
                     </div>
 
                     {showMenu && (
-                        <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border p-2 z-10">
+                        <div className="absolute right-0 mt-2 w-36 bg-white rounded-md shadow-lg border text-sm z-50">
                             <button
                                 onClick={handleLogout}
-                                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 text-sm"
+                                className="w-full text-left px-4 py-2 hover:bg-gray-100"
                             >
                                 Đăng xuất
                             </button>
@@ -66,7 +90,7 @@ const Header = () => {
                     )}
                 </div>
             </div>
-        </div>
+        </header>
     );
 };
 

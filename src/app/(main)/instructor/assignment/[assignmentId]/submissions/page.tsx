@@ -4,8 +4,8 @@
 import { Spin } from 'antd';
 import { useParams } from 'next/navigation';
 
-import { useAssignment } from '@/hooks/assigment/useAssignment';
-import { useTeacherAssignmentSubmissions } from '@/hooks/assigment/useTeacherAssignmentSubmissions';
+import { useAssignmentDetail } from '@/hooks/assignment/useAssignmentDetail';
+import { useTeacherAssignmentSubmissions } from '@/hooks/assignment/useTeacherAssignmentSubmissions';
 import AssignmentSubmissionList from '@/components/assigments/AssignmentSubmissionList';
 
 export default function AssignmentSubmissionsPage() {
@@ -14,7 +14,7 @@ export default function AssignmentSubmissionsPage() {
 
     // 1️⃣ Lấy assignment
     const { assignment, loading: assignmentLoading } =
-        useAssignment(assignmentId);
+        useAssignmentDetail(assignmentId);
 
     // 2️⃣ Lấy submissions (sau khi có classId)
     const { submissions, loading: submissionsLoading } =

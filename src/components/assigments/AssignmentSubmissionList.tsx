@@ -5,13 +5,16 @@
 
 import { Table, Button, Tag } from 'antd';
 import dayjs from 'dayjs';
-import type { AssignmentSubmissionItem } from '@/hooks/assigment/useTeacherAssignmentSubmissions.ts ';
+import type { TeacherSubmissionListItem } from '@/types/assignment';
+import {useParams, useRouter} from "next/navigation";
 
 export default function AssignmentSubmissionList({
                                                      submissions,
                                                  }: {
-    submissions: AssignmentSubmissionItem[];
+    submissions: TeacherSubmissionListItem[];
 }) {
+    const router = useRouter();
+    const params = useParams();
     return (
         <Table
             rowKey="id"
@@ -33,11 +36,24 @@ export default function AssignmentSubmissionList({
                     render: (v) => (v !== undefined ? <Tag color="green">{v}</Tag> : <Tag>Not graded</Tag>),
                 },
                 {
-                    title: 'Action',
-                    render: (_, record) => (
-                        <Button type="link">View</Button>
-                    ),
-                },
+                    title: "Action",
+                    render: (_, record) => {
+
+                        return (
+                            <Button
+                                type="link"
+                                onClick={() =>
+                                    router.push(
+                                        `/instructor/assignment/${params.assignmentId}/submissions/${record.id}`
+                                    )
+                                }
+                            >
+                                View
+                            </Button>
+                        );
+                    },
+                }
+
             ]}
         />
     );

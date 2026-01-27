@@ -8,7 +8,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useMyClasses } from "@/hooks/class/useMyClasses";
 import { useMyLearningClasses } from "@/hooks/class/useMyLearningClasses";
-import { useAssignmentsByClass } from "@/hooks/assigment/useAssignmentsByClass";
+import { useAssignmentsByClass } from "@/hooks/assignment/useAssignmentsByClass";
 
 import AssignmentList from "@/components/assigments/AssignmentList";
 import CreateAssignmentModal from "@/components/assigments/CreateAssignmentModal";
@@ -43,7 +43,7 @@ export default function AssignmentManagementPage() {
         role === "instructor" ? user?.uid : undefined
     );
 
-    // 👩‍🎓 Student
+    // 👩‍🎓 student
     const learningClasses = useMyLearningClasses(
         role === "student" ? user?.uid : undefined
     );
@@ -88,7 +88,7 @@ export default function AssignmentManagementPage() {
                         }))}
                     />
 
-                    {/* ❌ Student không được tạo bài */}
+                    {/* ❌ student không được tạo bài */}
                     {role === "instructor" && (
                         <Button
                             type="primary"

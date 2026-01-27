@@ -1,5 +1,6 @@
-'use client';
 
+'use client';
+import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from 'react';
 import {
     collection,
@@ -89,4 +90,27 @@ export function useTeacherAssignmentSubmissions(
     }, [assignmentId, classId]);
 
     return { submissions, loading };
+}
+
+
+export function useSubmissionDetail(submissionId: string) {
+    const [submission, setSubmission] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!submissionId) return;
+
+        const fetch = async () => {
+            setLoading(true);
+            const snap = await getDoc(
+                doc(db, "assignmentSubmissions", submissionId)
+            );
+            setSubmission(snap.exists() ? { id: snap.id, ...snap.data() } : null);
+            setLoading(false);
+        };
+
+        fetch();
+    }, [submissionId]);
+
+    return { submission, loading };
 }

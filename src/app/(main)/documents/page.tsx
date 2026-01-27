@@ -9,7 +9,7 @@ import DocumentList from "@/components/documents/DocumentList";
 import {getAuth, onAuthStateChanged} from "firebase/auth"; // hook auth của bạn
 
 export default function DocumentPage() {
-    const classId = "CLASS_ID_HERE"; // lấy từ route hoặc context
+    const classId = "CLASS_ID_HERE"; // lấy từ route hoặc contexts
     const [user, setUser] = useState<any>(null);
     const auth = getAuth();
     const { documents, loading } = useDocumentsByClass(classId);

@@ -1,6 +1,6 @@
 // hooks/useStudents.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addStudentsToClass, createStudentAccount  } from "@/services/studentsService";
+import { addStudentsToClass, createStudentAccount  } from "@/services/student/studentsService";
 
 export const useAddStudentsToClass = () => {
   const queryClient = useQueryClient();

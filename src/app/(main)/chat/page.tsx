@@ -12,7 +12,7 @@ import {Spin} from "antd";
 
 type User = {
     uid: string;
-    role: "student" | "instructor";
+    role: "Student" | "instructor";
     name?: string;
     email?: string;
 };
@@ -45,7 +45,7 @@ export default function ChatPage() {
 
             setUser({
                 uid: firebaseUser.uid,
-                role: tokenResult.claims.role as "student" | "instructor",
+                role: tokenResult.claims.role as "Student" | "instructor",
                 email: firebaseUser.email ?? undefined,
             });
             console.log("User set in chat page:", firebaseUser.uid, tokenResult.claims.role);

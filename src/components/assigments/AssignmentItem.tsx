@@ -6,7 +6,7 @@ import {
     publishAssignment,
     unpublishAssignment,
     deleteAssignment,
-} from "@/services/assignmentService";
+} from "@/services/student/assignmentService";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
 import {

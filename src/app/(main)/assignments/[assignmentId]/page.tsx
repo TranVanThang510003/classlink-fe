@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 
 import SubmitAssignment from '@/components/assigments/SubmitAssignment';
-import { useAssignment } from '@/hooks/assigment/useAssignment';
+import { useAssignmentDetail } from '@/hooks/assignment/useAssignmentDetail';
 
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -27,7 +27,7 @@ export default function AssignmentDetailPage() {
        ASSIGNMENT
     ========================= */
     const { assignment, loading: assignmentLoading } =
-        useAssignment(assignmentId);
+        useAssignmentDetail(assignmentId);
 
     /* =========================
        AUTH

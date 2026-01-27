@@ -7,7 +7,9 @@ import { ReactQueryProvider } from '@/app/(main)/providers/ReactQueryProvider'
 import AntdProvider  from './providers/AntdProvider';
 import Header from "@/components/layout/Header";
 import Sidebar from "@/components/layout/Sidebar";
+import Breadcrumbs from "@/components/common/Breadcrumbs";
 import {Toaster} from "react-hot-toast";
+import {AuthProvider} from "@/contexts/AuthContext";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -35,18 +37,27 @@ const RootLayout = ({ children }: React.PropsWithChildren) =>  {
         >
         <ReactQueryProvider>
             < AntdProvider>
+                <AuthProvider>
+                <div className="flex flex-col h-screen">
+                    <Toaster position="top-right" reverseOrder={false}/>
 
-                        <div className="flex h-screen">
-                            <Toaster position="top-right" reverseOrder={false} />
-                            <Sidebar />
-                            <div className="flex-1 flex flex-col">
-                                <Header />
-                                <main className="flex-1 p-6 bg-gray-50">
-                                    {children}
-                                </main>
-                            </div>
-                        </div>
+                    {/* ===== HEADER ===== */}
+                    <Header/>
 
+                    {/* ===== BODY ===== */}
+                    <div className="flex flex-1 overflow-hidden">
+                        {/* SIDEBAR */}
+                        <Sidebar/>
+
+                        {/* CONTENT */}
+                        <main className="flex-1 p-6 bg-white overflow-y-auto">
+                            <Breadcrumbs/>
+                            {children}
+                        </main>
+                    </div>
+                </div>
+
+                </AuthProvider>
             </AntdProvider>
         </ReactQueryProvider>
         </body>

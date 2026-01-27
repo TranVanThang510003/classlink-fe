@@ -16,7 +16,7 @@ function toDate(value: any): Date | null {
 /* =======================
    HOOK
 ======================= */
-export function useAssignment(assignmentId?: string) {
+export function useAssignmentDetail(assignmentId?: string) {
     const [assignment, setAssignment] = useState<Assignment | null>(null);
     const [loading, setLoading] = useState(true);
 

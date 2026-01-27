@@ -1,23 +1,24 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   FaUsers,
   FaBook,
   FaRegCommentDots,
   FaChalkboardTeacher,
   FaClipboardCheck,
-} from "react-icons/fa";
+} from 'react-icons/fa';
 
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
-type UserRole = "student" | "instructor";
+type UserRole = 'student' | 'instructor';
 
 const Sidebar = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const [role, setRole] = useState<UserRole | null>(null);
 
   /* =========================
@@ -32,7 +33,7 @@ const Sidebar = () => {
         return;
       }
 
-      const snap = await getDoc(doc(db, "users", user.uid));
+      const snap = await getDoc(doc(db, 'users', user.uid));
       setRole(snap.data()?.role);
     });
 
@@ -44,62 +45,80 @@ const Sidebar = () => {
   ========================= */
   const menuItems = [
     {
-      name: "Manage Students",
-      icon: <FaUsers className="text-[#ff6500]" />,
-      path: "/instructor/manage-students",
-      roles: ["instructor"],
+      name: 'Assignments',
+      icon: <FaClipboardCheck />,
+      path: '/assignments',
+      roles: ['instructor', 'student'],
     },
     {
-      name: "Manage Assignments",
-      icon: <FaClipboardCheck className="text-[#ff6500]" />,
-      path: "/assignments",
-      roles: ["instructor", "student"],
+      name: 'Manage Students',
+      icon: <FaUsers />,
+      path: '/instructor/manage-students',
+      roles: ['instructor'],
     },
     {
-      name: "Manage Documents",
-      icon: <FaBook className="text-[#ff6500]" />,
-      path: "/documents",
-      roles: ["instructor", "student"],
+      name: 'Manage Documents',
+      icon: <FaBook />,
+      path: '/documents',
+      roles: ['instructor', 'student'],
     },
     {
-      name: "Manage Classes",
-      icon: <FaChalkboardTeacher className="text-[#ff6500]" />,
-      path: "/instructor/manage-classes",
-      roles: ["instructor"],
+      name: 'Manage Classes',
+      icon: <FaChalkboardTeacher />,
+      path: '/instructor/manage-classes',
+      roles: ['instructor'],
     },
     {
-      name: "Message",
-      icon: <FaRegCommentDots className="text-[#ff6500]" />,
-      path: "/chat",
-      roles: ["instructor", "student"],
+      name: 'Message',
+      icon: <FaRegCommentDots />,
+      path: '/chat',
+      roles: ['instructor', 'student'],
     },
   ];
 
-  const handleNavigation = (path: string) => {
-    router.push(path);
-  };
-
-  if (!role) return null; // ⛔ chờ load role
+  if (!role) return null;
 
   return (
-      <div className="w-72 flex-shrink-0 h-screen p-6 flex flex-col">
-        <nav className="mt-5">
-          <ul>
+      <aside className="w-72 h-screen bg-gradient-to-b from-[#0B1C3D] to-[#08183A] px-4 py-6">
+        {/* LOGO / TITLE */}
+        <div className="text-white text-xl font-semibold px-3 mb-8">
+          School Admin
+        </div>
+
+        <nav>
+          <ul className="space-y-1">
             {menuItems
                 .filter((item) => item.roles.includes(role))
-                .map((item) => (
-                    <li
-                        key={item.name}
-                        className="flex items-center text-[#2C7BE5] p-3 mt-2 rounded-sm cursor-pointer bg-[#E7F1FF] border-r-4 border-[#2C7BE5] shadow font-semibold hover:scale-105 transition-all duration-200"
-                        onClick={() => handleNavigation(item.path)}
-                    >
-                      {item.icon}
-                      <span className="ml-3">{item.name}</span>
-                    </li>
-                ))}
+                .map((item) => {
+                  const isActive = pathname.startsWith(item.path);
+
+                  return (
+                      <li
+                          key={item.name}
+                          onClick={() => router.push(item.path)}
+                          className={`
+                                        flex items-center gap-3 px-4 py-3
+                                        rounded-md cursor-pointer
+                                        transition-all
+                                        ${
+                              isActive
+                                  ? 'bg-[#F6C21C] text-[#08183A] font-semibold'
+                                  : 'text-[#A9B4D0] hover:bg-white/10 hover:text-white'
+                          }
+                                    `}
+                      >
+                                    <span className="text-lg">
+                                        {item.icon}
+                                    </span>
+                        <span className="text-sm">
+                                        {item.name}
+                                    </span>
+                      </li>
+                  );
+                })}
           </ul>
         </nav>
-      </div>
+      </aside>
   );
 };
 

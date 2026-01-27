@@ -9,7 +9,7 @@ type Props = {
 
 const StudentTable: React.FC<Props> = ({ data, loading }) => {
   const columns: ColumnsType<any> = [
-    { title: 'Student Name', dataIndex: 'name' },
+    { title: 'student Name', dataIndex: 'name' },
     { title: 'Email', dataIndex: 'email' },
     { title: 'Phone', dataIndex: 'phone' },
 
