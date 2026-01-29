@@ -14,6 +14,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
+
 type UserRole = 'student' | 'instructor';
 
 const Sidebar = () => {
@@ -47,7 +48,10 @@ const Sidebar = () => {
     {
       name: 'Assignments',
       icon: <FaClipboardCheck />,
-      path: '/assignments',
+      path: (role: UserRole) =>
+      role === 'instructor'
+          ? '/instructor/assignments'
+          : '/assignments',
       roles: ['instructor', 'student'],
     },
     {
@@ -90,29 +94,29 @@ const Sidebar = () => {
             {menuItems
                 .filter((item) => item.roles.includes(role))
                 .map((item) => {
-                  const isActive = pathname.startsWith(item.path);
+                  const resolvedPath =
+                      typeof item.path === 'function'
+                          ? item.path(role)
+                          : item.path;
+
+                  const isActive = pathname.startsWith(resolvedPath);
 
                   return (
                       <li
                           key={item.name}
-                          onClick={() => router.push(item.path)}
+                          onClick={() => router.push(resolvedPath)}
                           className={`
-                                        flex items-center gap-3 px-4 py-3
-                                        rounded-md cursor-pointer
-                                        transition-all
-                                        ${
+          flex items-center gap-3 px-4 py-3
+          rounded-md cursor-pointer transition-all
+          ${
                               isActive
                                   ? 'bg-[#F6C21C] text-[#08183A] font-semibold'
                                   : 'text-[#A9B4D0] hover:bg-white/10 hover:text-white'
                           }
-                                    `}
+        `}
                       >
-                                    <span className="text-lg">
-                                        {item.icon}
-                                    </span>
-                        <span className="text-sm">
-                                        {item.name}
-                                    </span>
+                        <span className="text-lg">{item.icon}</span>
+                        <span className="text-sm">{item.name}</span>
                       </li>
                   );
                 })}

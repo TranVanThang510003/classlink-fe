@@ -1,11 +1,11 @@
-import type { UploadFile } from "antd/es/upload/interface";
+import {Timestamp} from "firebase/firestore";
+
 export type AssignmentAttachment = {
     fileUrl: string;
     fileName: string;
     fileType: string;
     fileSize: number;
 };
-
 
 export type Assignment = {
     id: string;
@@ -16,11 +16,14 @@ export type Assignment = {
     // luôn là array (dễ render)
     attachments?: AssignmentAttachment[];
 
-    dueDate?: Date | null;
+    dueDate?: Date |Timestamp| null;
     status: "draft" | "published";
     createdBy: string;
-    createdAt?: Date | null;
+    createdAt?: Date |Timestamp| null;
 };
+export interface StudentAssignment extends Assignment {
+    submission?: AssignmentSubmission | null;
+}
 
 export type AssignmentSubmission = {
     id: string;
@@ -34,41 +37,16 @@ export type AssignmentSubmission = {
     submittedBy: string;
     submittedAt?: Date | null;
 
-    // 🔥 mở rộng tương lai
     score?: number;
     teacherComment?: string;
 };
-export type SubmitAssignmentPayload = {
-    assignmentId: string;
-    classId: string;
-    content: string;
-    files?: UploadFile[];
-    submittedBy: string;
-};
+
 
 export type AssignmentSubmissionAttachment = {
     fileUrl: string;
     fileName: string;
     fileType: string;
     fileSize: number;
-};
-export type SubmitAssignmentServicePayload = {
-    assignmentId: string;
-    classId: string;
-    content: string;
-    attachments: AssignmentSubmissionAttachment[];
-    submittedBy: string;
-};
-
-
-export type CreateAssignmentPayload = {
-    classId: string;
-    title: string;
-    description?: string;
-    dueDate?: Date | null;
-    attachments?: AssignmentAttachment[];
-    status: "draft" | "published";
-    createdBy: string;
 };
 
 
@@ -79,6 +57,7 @@ export type TeacherSubmissionListItem = {
     submittedBy: string;
     studentName?: string;
     submittedAt: Date | null;
+    dueDate?: Date | Timestamp | null;
     score?: number;
     feedback?: string;
 };

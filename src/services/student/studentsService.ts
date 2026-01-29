@@ -10,7 +10,7 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import type { CreateStudentPayload } from "@/types/student";
+import type {AddStudentsToClassPayload, CreateStudentPayload} from "@/types/student";
 import {getAuth} from "firebase/auth";
 
 /**
@@ -76,10 +76,6 @@ export const createStudentAccount = async (
 
 
 
-export type AddStudentsToClassPayload = {
-  studentIds: string[];
-  classId: string;
-};
 
 export const addStudentsToClass = async ({
                                            studentIds,

@@ -24,10 +24,7 @@ function toDate(value: any): Date | null {
 /* =======================
    HOOK
 ======================= */
-export function useAssignmentsByClass(
-    classId?: string,
-    role: "instructor" | "student" = "student"
-) {
+export function useInstructorAssignmentsByClass(classId?: string) {
     const [assignments, setAssignments] = useState<Assignment[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -40,39 +37,20 @@ export function useAssignmentsByClass(
 
         setLoading(true);
 
-        // ✅ Query khác nhau theo ROLE
-        const baseQuery = [
+        const q = query(
+            collection(db, "assignments"),
             where("classId", "==", classId),
-            orderBy("createdAt", "desc"),
-        ];
-
-        const q =
-            role === "student"
-                ? query(
-                    collection(db, "assignments"),
-                    where("classId", "==", classId),
-                    where("status", "==", "published"), // 🔥 QUAN TRỌNG
-                    orderBy("createdAt", "desc")
-                )
-                : query(
-                    collection(db, "assignments"),
-                    ...baseQuery
-                );
+            orderBy("createdAt", "desc")
+        );
 
         const unsub = onSnapshot(
             q,
             (snap) => {
-                const data: Assignment[] = snap.docs.map((doc) => {
+                const data = snap.docs.map((doc) => {
                     const raw = doc.data();
-
                     return {
                         id: doc.id,
-                        classId: raw.classId,
-                        title: raw.title,
-                        description: raw.description,
-                        status: raw.status,
-                        createdBy: raw.createdBy,
-                        attachments: raw.attachments ?? [],
+                        ...raw,
                         dueDate: toDate(raw.dueDate),
                         createdAt: toDate(raw.createdAt),
                     };
@@ -81,15 +59,14 @@ export function useAssignmentsByClass(
                 setAssignments(data);
                 setLoading(false);
             },
-            (err) => {
-                console.error("Failed to fetch assignments", err);
+            () => {
                 setAssignments([]);
                 setLoading(false);
             }
         );
 
-        return () => unsub();
-    }, [classId, role]);
+        return unsub;
+    }, [classId]);
 
     return { assignments, loading };
 }

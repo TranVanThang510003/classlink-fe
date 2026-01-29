@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getMyAssignmentSubmission } from "@/services/student/assignmentService";
+import { getMyAssignmentSubmission } from "@/services/assignment/assignmentStudentService";
 
 export function useMySubmission(
     assignmentId: string,

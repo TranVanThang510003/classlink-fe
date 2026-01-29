@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
 import type { Message } from "@/types/chat";
-import { subscribeMessages, sendMessageService } from "@/services/chatService";
+import { subscribeMessages, sendMessageService } from "@/services/message/chatService";
 
 export function useMessages(chatId?: string) {
     const [messages, setMessages] = useState<Message[]>([]);

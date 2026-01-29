@@ -1,12 +1,6 @@
 
 import type { Timestamp } from 'firebase/firestore';
-export type User = {
-    id: string;
-    name: string;
-    email?: string;
-    avatar?: string;
-    role?: string;
-};
+
 
 export type Message = {
     id: string;
@@ -19,7 +13,7 @@ export type Message = {
         senderId: string;
         senderName: string; // ✅
     } | null;
-    createdAt: any;
+    createdAt: Date|Timestamp|null;
 };
 
 export type CreateGroupChatPayload = {

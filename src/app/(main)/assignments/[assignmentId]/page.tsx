@@ -1,6 +1,6 @@
 'use client';
 
-import { Spin, Tag, Button } from 'antd';
+import { Spin, Tag } from 'antd';
 import { useParams, useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -49,16 +49,26 @@ export default function AssignmentDetailPage() {
                 doc(db, 'users', firebaseUser.uid)
             );
 
+            const userData = snap.data() as AuthUser;
+
+            // ❌ Instructor không được vào trang student
+            if (userData.role === 'instructor') {
+                router.replace(
+                    `/instructor/assignments/${assignmentId}`
+                );
+                return;
+            }
+
             setUser({
                 uid: firebaseUser.uid,
-                ...(snap.data() as AuthUser),
+                ...userData,
             });
 
             setAuthLoading(false);
         });
 
         return () => unsub();
-    }, []);
+    }, [assignmentId, router]);
 
     /* =========================
        LOADING
@@ -73,22 +83,19 @@ export default function AssignmentDetailPage() {
 
     if (!assignment || !user) return null;
 
-    const isStudent = user.role === 'student';
-    const isInstructor = user.role === 'instructor';
-
     /* =========================
-       UI
+       UI (LMS STYLE)
     ========================= */
     return (
-        <div className="max-w-3xl mx-auto px-4 py-10 space-y-8">
+        <div className="mx-auto max-w-4xl px-4 py-8 space-y-6">
 
             {/* ===== HEADER ===== */}
-            <div>
+            <div className="border-b border-yellow-300 pb-4">
                 <h1 className="text-2xl font-semibold text-gray-900">
                     {assignment.title}
                 </h1>
 
-                <div className="flex flex-wrap gap-3 text-sm text-gray-500 mt-2">
+                <div className="mt-2 flex flex-wrap gap-4 text-sm text-gray-600">
                     <Tag
                         color={
                             assignment.status === 'published'
@@ -101,8 +108,8 @@ export default function AssignmentDetailPage() {
 
                     {assignment.dueDate && (
                         <span>
-                            Due:{' '}
-                            <b>
+                            Due:&nbsp;
+                            <b className="text-gray-900">
                                 {dayjs(assignment.dueDate).format(
                                     'DD/MM/YYYY HH:mm'
                                 )}
@@ -113,63 +120,61 @@ export default function AssignmentDetailPage() {
             </div>
 
             {/* ===== DESCRIPTION ===== */}
-            <div className="rounded-xl border bg-white p-6">
+            <section className="rounded-lg shadow-sm bg-white p-6">
+                <h2 className="mb-3 text-lg font-medium">
+                    Assignment Instructions
+                </h2>
+
                 {assignment.description ? (
                     <div
+                        className="prose max-w-none"
                         dangerouslySetInnerHTML={{
                             __html: assignment.description,
                         }}
                     />
                 ) : (
-                    <span className="italic text-gray-400">
-                        No description provided.
-                    </span>
+                    <p className="italic text-gray-400">
+                        No instructions provided.
+                    </p>
                 )}
-            </div>
+            </section>
 
             {/* ===== ATTACHMENTS ===== */}
             {assignment.attachments?.length > 0 && (
-                <div className="rounded-xl border bg-white p-6 space-y-2">
-                    <h3 className="font-medium">Attachments</h3>
+                <section className="rounded-lg shadow-sm bg-white p-6">
+                    <h2 className="mb-3 text-lg font-medium">
+                        Files
+                    </h2>
 
-                    {assignment.attachments.map((file) => (
-                        <a
-                            key={file.fileUrl}
-                            href={file.fileUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block text-sm text-blue-600 hover:underline"
-                        >
-                            {file.fileName}
-                        </a>
-                    ))}
-                </div>
+                    <ul className="space-y-2">
+                        {assignment.attachments.map((file) => (
+                            <li key={file.fileUrl}>
+                                <a
+                                    href={file.fileUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm text-blue-600 hover:underline"
+                                >
+                                    {file.fileName}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
             )}
 
-            {/* ===== STUDENT: SUBMIT ===== */}
-            {isStudent && assignment.status === 'published' && (
-                <div className="rounded-xl border bg-white p-6">
+            {/* ===== SUBMISSION ===== */}
+            {assignment.status === 'published' && (
+                <section className="rounded-lg shadow-sm bg-white p-6">
+                    <h2 className="mb-4 text-lg font-medium">
+                        Your Submission
+                    </h2>
+
                     <SubmitAssignment
                         assignmentId={assignment.id}
                         classId={assignment.classId}
                     />
-                </div>
-            )}
-
-            {/* ===== INSTRUCTOR: VIEW SUBMISSIONS ===== */}
-            {isInstructor && (
-                <div className="rounded-xl border bg-white p-6 flex justify-end">
-                    <Button
-                        type="primary"
-                        onClick={() =>
-                            router.push(
-                                `/assignments/${assignment.id}/submissions`
-                            )
-                        }
-                    >
-                        View Student Submissions
-                    </Button>
-                </div>
+                </section>
             )}
         </div>
     );

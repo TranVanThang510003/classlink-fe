@@ -1,3 +1,5 @@
+import {Timestamp} from "firebase/firestore";
+
 export interface DocumentItem {
     id: string;
     classId: string;
@@ -9,5 +11,5 @@ export interface DocumentItem {
     fileSize: number;
     visibility: "public" | "private";
     createdBy: string;
-    createdAt?: any;
+    createdAt?: Date |Timestamp| null;
 }

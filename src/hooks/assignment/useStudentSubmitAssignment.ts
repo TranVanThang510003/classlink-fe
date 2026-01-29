@@ -2,15 +2,16 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import type { UploadFile } from "antd/es/upload/interface";
 
-import { submitAssignment } from "@/services/student/assignmentService";
+import { submitAssignment } from "@/services/assignment/assignmentStudentService";
 import { uploadFileToCloudinary } from "@/lib/cloudinary";
 import type {
-    SubmitAssignmentPayload,
     AssignmentSubmissionAttachment,
-    SubmitAssignmentServicePayload,
 } from "@/types/assignment";
-
-export function useSubmitAssignment() {
+import type {
+    SubmitAssignmentPayload,
+    SubmitAssignmentServicePayload,
+} from "@/types/assigmentPayload";
+export function useStudentSubmitAssignment() {
     const [loading, setLoading] = useState(false);
 
     const submitAssignmentHandler = async (

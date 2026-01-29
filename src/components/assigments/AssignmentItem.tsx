@@ -1,121 +1,105 @@
 "use client";
 
-import { Button, Tag, App, Dropdown } from "antd";
-import type { Assignment } from "@/types/assignment";
-import {
-    publishAssignment,
-    unpublishAssignment,
-    deleteAssignment,
-} from "@/services/student/assignmentService";
-import toast from "react-hot-toast";
+import { Tag } from "antd";
 import dayjs from "dayjs";
 import {
-    DownloadOutlined,
     ClockCircleOutlined,
-    MoreOutlined,
-    FileOutlined,
+    CheckCircleOutlined,
+    UploadOutlined,
+    EditOutlined,
+    MessageOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
+import type { StudentAssignment } from "@/types/assignment";
 
 interface Props {
-    assignment: Assignment;
+    assignment: StudentAssignment;
 }
 
 export default function AssignmentItem({ assignment }: Props) {
-    if (!assignment) return null;
-
     const router = useRouter();
-    const { modal } = App.useApp();
 
-    const status = assignment.status ?? "draft";
-    const isPublished = status === "published";
-
-    const handleDelete = () => {
-        modal.confirm({
-            title: "Delete assignment?",
-            content: (
-                <div>
-                    This action cannot be undone.
-                    <b className="block text-red-600">{assignment.title}</b>
-                </div>
-            ),
-            okType: "danger",
-            async onOk() {
-                await deleteAssignment(assignment.id);
-                toast.success("Deleted");
-            },
-        });
-    };
+    const submission = assignment.submission;
+    const isSubmitted = !!submission?.submittedAt;
+    const isGraded = submission?.score !== undefined;
+    const isOverdue =
+        assignment.dueDate &&
+        dayjs().isAfter(dayjs(assignment.dueDate)) &&
+        !isSubmitted;
+    const isLateSubmission =
+        assignment.dueDate &&
+        submission?.submittedAt &&
+        dayjs(submission.submittedAt).isAfter(dayjs(assignment.dueDate));
+    console.log("dueDate", assignment.dueDate);
+    console.log("submittedAt", submission?.submittedAt);
+    console.log(
+        "isLate?",
+        dayjs(submission?.submittedAt).isAfter(dayjs(assignment.dueDate))
+    );
 
     return (
         <div
             onClick={() => router.push(`/assignments/${assignment.id}`)}
-            className="cursor-pointer rounded-xl border bg-white p-5 shadow-sm hover:shadow-md"
+            className="
+        flex justify-between
+        rounded-lg border border-gray-200 bg-white px-5 py-4
+        hover:border-blue-400 hover:shadow-sm
+        cursor-pointer
+      "
         >
-            {/* HEADER */}
-            <div className="flex justify-between">
-                <div>
-                    <div className="font-semibold">{assignment.title}</div>
+            <div className="space-y-1">
+                <h3 className="font-medium text-gray-900">
+                    {assignment.title}
+                </h3>
 
-                    <div className="flex gap-3 text-sm text-gray-500 mt-1">
-                        <Tag color={isPublished ? "green" : "orange"}>
-                            {status.toUpperCase()}
-                        </Tag>
-
-                        {assignment.dueDate && (
-                            <span className="flex items-center gap-1">
-                                <ClockCircleOutlined />
-                                {dayjs(assignment.dueDate).format("DD/MM/YYYY HH:mm")}
-                            </span>
-                        )}
+                {assignment.dueDate && (
+                    <div className="text-xs text-gray-500 flex items-center gap-1">
+                        <ClockCircleOutlined/>
+                        Due {dayjs(assignment.dueDate).format("DD/MM/YYYY HH:mm")}
                     </div>
+                )}
+
+                <div className="flex flex-wrap gap-2 pt-1">
+                    {/* Chưa nộp */}
+                    {!isSubmitted && !isOverdue && (
+                        <Tag icon={<EditOutlined/>}>Not submitted</Tag>
+                    )}
+
+                    {/* Quá hạn nhưng chưa nộp */}
+                    {isOverdue && (
+                        <Tag color="red">Overdue</Tag>
+                    )}
+
+                    {/* Đã nộp nhưng trễ */}
+                    {isLateSubmission  && (
+                        <Tag icon={<UploadOutlined/>} color="warning">
+                            Submitted late
+                        </Tag>
+                    )}
+
+                    {/* Đã nộp đúng hạn */}
+                    {isSubmitted && !isLateSubmission  && (
+                        <Tag icon={<UploadOutlined/>} color="processing">
+                            Submitted
+                        </Tag>
+                    )}
+
+                    {/* Đã chấm điểm */}
+                    {isGraded && (
+                        <Tag icon={<CheckCircleOutlined/>} color="success">
+                            Score: {submission.score} / 10
+                        </Tag>
+                    )}
+
+                    {/* Giáo viên nhận xét */}
+                    {submission?.teacherComment && (
+                        <Tag icon={<MessageOutlined/>} color="blue">
+                            Teacher commented
+                        </Tag>
+                    )}
                 </div>
 
-                <Dropdown
-                    trigger={["click"]}
-                    menu={{
-                        items: [
-                            {
-                                key: "toggle",
-                                label: isPublished ? "Unpublish" : "Publish",
-                                onClick: async (e) => {
-                                    e.domEvent.stopPropagation();
-                                    isPublished
-                                        ? await unpublishAssignment(assignment.id)
-                                        : await publishAssignment(assignment.id);
-                                },
-                            },
-                            { type: "divider" },
-                            {
-                                key: "delete",
-                                label: "Delete",
-                                danger: true,
-                                onClick: (e) => {
-                                    e.domEvent.stopPropagation();
-                                    handleDelete();
-                                },
-                            },
-                        ],
-                    }}
-                >
-                    <Button icon={<MoreOutlined />} onClick={(e) => e.stopPropagation()} />
-                </Dropdown>
             </div>
-
-            {/* DESCRIPTION (CLAMP) */}
-            {assignment.description && (
-                <p className="mt-3 text-sm text-gray-600 line-clamp-3">
-                    {assignment.description}
-                </p>
-            )}
-
-            {/* ATTACHMENTS */}
-            {assignment.attachments?.length > 0 && (
-                <div className="mt-3 flex gap-2 text-xs text-gray-500">
-                    <FileOutlined />
-                    {assignment.attachments.length} attachment(s)
-                </div>
-            )}
         </div>
     );
 }

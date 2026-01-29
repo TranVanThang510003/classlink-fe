@@ -5,7 +5,7 @@ import { Spin } from 'antd';
 import { useParams } from 'next/navigation';
 
 import { useAssignmentDetail } from '@/hooks/assignment/useAssignmentDetail';
-import { useTeacherAssignmentSubmissions } from '@/hooks/assignment/useTeacherAssignmentSubmissions';
+import { useInstructorAssignmentSubmissions } from '@/hooks/assignment/useInstructorAssignmentSubmissions';
 import AssignmentSubmissionList from '@/components/assigments/AssignmentSubmissionList';
 
 export default function AssignmentSubmissionsPage() {
@@ -18,7 +18,7 @@ export default function AssignmentSubmissionsPage() {
 
     // 2️⃣ Lấy submissions (sau khi có classId)
     const { submissions, loading: submissionsLoading } =
-        useTeacherAssignmentSubmissions(
+        useInstructorAssignmentSubmissions(
             assignmentId,
             assignment?.classId
         );

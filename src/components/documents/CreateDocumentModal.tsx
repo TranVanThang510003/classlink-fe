@@ -3,7 +3,7 @@
 import { Modal, Form, Input, Upload, Button } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import { uploadDocument } from "@/services/documentService";
+import { uploadDocument } from "@/services/document/documentService";
 import toast from "react-hot-toast";
 
 interface Props {

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Class } from "@/types/class";
-import { subscribeClassesByInstructor } from "@/services/classService";
+import { subscribeClassesByInstructor } from "@/services/class/classService";
 
 export function useClasses(instructorId?: string) {
     const [classes, setClasses] = useState<Class[]>([]);

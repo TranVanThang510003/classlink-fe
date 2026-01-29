@@ -2,7 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { createGroupChatService } from "@/services/chatService";
+import { createGroupChatService } from "@/services/message/chatService";
 
 export const useCreateGroupChat = () => {
     return useMutation({

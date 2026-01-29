@@ -1,4 +1,4 @@
-import axios from "../util/axios.custom";
+import axios from "../../util/axios.custom";
 
 export const sendOtp = async (email: string) => {
     const res = await axios.post("/api/auth/login/send-otp", { email });

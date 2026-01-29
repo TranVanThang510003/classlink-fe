@@ -5,11 +5,13 @@ import { useState } from "react";
 import { useAuthContext } from "@/contexts/AuthContext";
 
 import { useMyClasses } from "@/hooks/class/useMyClasses";
-import { useAssignmentsByClass} from "@/hooks/assignment/useAssignmentsByClass";
+import {useInstructorAssignmentsByClass} from "@/hooks/assignment/useInstructorAssignmentsByClass";
 import InstructorAssignmentTable from "@/components/assigments/InstructorAssignmentTable";
+import CreateAssignmentModal from "@/components/assigments/CreateAssignmentModal";
 
 export default function InstructorAssignmentsPage() {
     const [classId, setClassId] = useState<string>();
+    const [openCreate, setOpenCreate] = useState(false);
 
     /* ===== AUTH CONTEXT ===== */
     const {
@@ -19,9 +21,8 @@ export default function InstructorAssignmentsPage() {
 
 
     const classes = useMyClasses(instructorId ?? undefined);
-    const { assignments, loading } = useAssignmentsByClass(
-        classId,
-        "instructor"
+    const { assignments, loading } = useInstructorAssignmentsByClass(
+        classId
     );
     /* ===== GUARD (SAU HOOK) ===== */
     if (authLoading) {
@@ -42,6 +43,7 @@ export default function InstructorAssignmentsPage() {
                 <Button
                     className="border-yellow-500 text-yellow-500 font-semibold"
                     disabled={!classId}
+                    onClick={() => setOpenCreate(true)}
                 >
                     + ADD NEW
                 </Button>
@@ -82,6 +84,12 @@ export default function InstructorAssignmentsPage() {
                     assignments={assignments}
                 />
             )}
+            <CreateAssignmentModal
+                open={openCreate}
+                onClose={() => setOpenCreate(false)}
+                classId={classId}
+            />
+
         </div>
     );
 }

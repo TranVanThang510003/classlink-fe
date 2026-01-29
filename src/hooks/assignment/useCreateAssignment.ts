@@ -2,7 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import type { UploadFile } from "antd/es/upload/interface";
 
-import { createAssignment } from "@/services/student/assignmentService";
+import { createAssignment } from "@/services/assignment/assignmentInstructorService";
 import { uploadFileToCloudinary } from "@/lib/cloudinary";
 
 export function useCreateAssignment() {

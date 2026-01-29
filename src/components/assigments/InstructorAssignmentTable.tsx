@@ -1,10 +1,12 @@
 // components/assigments/InstructorAssignmentTable.tsx
 "use client";
 
-import { Table, Tooltip, Tag } from "antd";
+import { Table, Tooltip, Tag, Dropdown } from "antd";
 import { EyeOutlined, EditOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import {useRouter} from "next/navigation";
+import {publishAssignment, unpublishAssignment} from "@/services/assignment/assignmentInstructorService";
+import toast from "react-hot-toast";
 
 export default function InstructorAssignmentTable({
                                                       assignments,
@@ -45,12 +47,47 @@ export default function InstructorAssignmentTable({
                 {
                     title: "Status",
                     dataIndex: "status",
-                    render: (status) => (
-                        <Tag color={status === "draft" ? "orange" : "green"}>
-                            {status.toUpperCase()}
-                        </Tag>
-                    ),
+                    render: (status, record) => {
+                        const isPublished = status === "published";
+
+                        return (
+                            <Dropdown
+                                trigger={["click"]}
+                                menu={{
+                                    items: [
+                                        {
+                                            key: "toggle",
+                                            label: isPublished ? "Unpublish" : "Publish",
+                                            onClick: async (e) => {
+                                                e.domEvent.stopPropagation();
+                                                try {
+                                                    isPublished
+                                                        ? await unpublishAssignment(record.id)
+                                                        : await publishAssignment(record.id);
+
+                                                    toast.success(
+                                                        isPublished ? "Unpublished" : "Published"
+                                                    );
+                                                } catch {
+                                                    toast.error("Action failed");
+                                                }
+                                            },
+                                        },
+                                    ],
+                                }}
+                            >
+                                <Tag
+                                    color={isPublished ? "green" : "orange"}
+                                    className="cursor-pointer select-none"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    {status.toUpperCase()}
+                                </Tag>
+                            </Dropdown>
+                        );
+                    },
                 },
+
                 {
                     title: "",
                     align: "right",
@@ -60,7 +97,7 @@ export default function InstructorAssignmentTable({
                                 <EyeOutlined className="cursor-pointer"
                                     onClick={() =>
                                     router.push(
-                                    `/instructor/assignment/${record.id}`
+                                    `/instructor/assignments/${record.id}`
                                     )
                                 } />
                             </Tooltip>

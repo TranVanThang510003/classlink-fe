@@ -18,12 +18,28 @@ import type {TeacherSubmissionListItem} from "@/types/assignment";
 /* ================================
    HOOK
 ================================ */
-export function useTeacherAssignmentSubmissions(
+
+export function useInstructorAssignmentSubmissions(
     assignmentId?: string,
     classId?: string
 ) {
     const [submissions, setSubmissions] = useState<TeacherSubmissionListItem[]>([]);
     const [loading, setLoading] = useState(true);
+    const [dueDate, setDueDate] = useState<any>(null);
+
+    useEffect(() => {
+        if (!assignmentId) return;
+
+        const fetchAssignment = async () => {
+            const snap = await getDoc(
+                doc(db, 'assignments', assignmentId)
+            );
+
+            setDueDate(snap.exists() ? snap.data().dueDate : null);
+        };
+
+        fetchAssignment();
+    }, [assignmentId]);
 
     useEffect(() => {
         if (!assignmentId || !classId) {
@@ -49,9 +65,7 @@ export function useTeacherAssignmentSubmissions(
                     ...d.data(),
                 })) as TeacherSubmissionListItem[];
 
-                /* =========================
-                   MAP USER NAMES
-                ========================= */
+                /* MAP STUDENT NAMES */
                 const userIds = Array.from(
                     new Set(raw.map((s) => s.submittedBy))
                 );
@@ -73,6 +87,7 @@ export function useTeacherAssignmentSubmissions(
 
                 const merged = raw.map((s) => ({
                     ...s,
+                    dueDate: dueDate?.toDate ? dueDate.toDate() : dueDate,
                     studentName: userMap[s.submittedBy] ?? 'Unknown',
                 }));
 
@@ -87,10 +102,11 @@ export function useTeacherAssignmentSubmissions(
         );
 
         return () => unsub();
-    }, [assignmentId, classId]);
+    }, [assignmentId, classId, dueDate]);
 
     return { submissions, loading };
 }
+
 
 
 export function useSubmissionDetail(submissionId: string) {
@@ -102,10 +118,35 @@ export function useSubmissionDetail(submissionId: string) {
 
         const fetch = async () => {
             setLoading(true);
+
+            // 1. Get submission
             const snap = await getDoc(
                 doc(db, "assignmentSubmissions", submissionId)
             );
-            setSubmission(snap.exists() ? { id: snap.id, ...snap.data() } : null);
+
+            if (!snap.exists()) {
+                setSubmission(null);
+                setLoading(false);
+                return;
+            }
+
+            const submissionData = {
+                id: snap.id,
+                ...snap.data(),
+            } as any;
+
+            // 2. Get student info
+            if (submissionData.submittedBy) {
+                const userSnap = await getDoc(
+                    doc(db, "users", submissionData.submittedBy)
+                );
+
+                submissionData.studentName = userSnap.exists()
+                    ? userSnap.data().name
+                    : "Unknown";
+            }
+
+            setSubmission(submissionData);
             setLoading(false);
         };
 

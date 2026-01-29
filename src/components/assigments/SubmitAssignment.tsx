@@ -19,7 +19,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import Heading from "@tiptap/extension-heading";
 
 /* ===== HOOKS ===== */
-import { useSubmitAssignment } from "@/hooks/assignment/useSubmitAssignment";
+import { useStudentSubmitAssignment } from "@/hooks/assignment/useStudentSubmitAssignment";
 import { useMySubmission } from "@/hooks/assignment/useMySubmission";
 import {useRouter} from "next/navigation";
 
@@ -90,7 +90,7 @@ export default function SubmitAssignment({
     const auth = getAuth();
     const user = auth.currentUser;
 
-    const { submitAssignment, loading } = useSubmitAssignment();
+    const { submitAssignment, loading } = useStudentSubmitAssignment();
     const { submission, loading: checking } = useMySubmission(
         assignmentId,
         user?.uid
@@ -151,27 +151,60 @@ export default function SubmitAssignment({
     };
 
     return (
-        <div className="mt-8 rounded-xl border bg-gray-50 p-6">
+        <div className="mt-8 rounded-xl border border-yellow-300 bg-yellow-50 p-6">
             <h3 className="mb-2 text-lg font-semibold">
                 Submit Assignment
             </h3>
 
             {/* ===== STATUS ===== */}
             {submission && (
-                <div className="mb-4 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700">
-                    ✅ Đã nộp lúc{" "}
-                    <b>{formatSubmittedAt(submission.submittedAt)}</b>
-                    <br />
-                    ⏳ Đang chờ giáo viên chấm bài
+                <div className="mb-4 space-y-1 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700">
+                    <div>
+                        ✅ Submitted at{" "}
+                        <b>{formatSubmittedAt(submission.submittedAt)}</b>
+                    </div>
+
+                    {/* ===== NOT GRADED YET ===== */}
+                    {submission.score === undefined && (
+                        <div>⏳ Waiting for instructor grading</div>
+                    )}
+
+                    {/* ===== GRADED ===== */}
+                    {submission.score !== undefined && (
+                        <div className="space-y-1">
+                            <div>
+                                🎯 Score:{" "}
+                                <b className="text-green-800">
+                                    {submission.score}
+                                </b>
+                            </div>
+
+                            {submission.teacherComment && (
+                                <div className="text-gray-700">
+                                    💬 Instructor feedback:{" "}
+                                    <span className="italic">
+              {submission.teacherComment}
+            </span>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             )}
+
 
             {/* ===== EDITOR ===== */}
             <div className="rounded-md border bg-white p-3">
                 <EditorToolbar editor={editor} disabled={!!submission} />
                 <EditorContent
                     editor={editor}
-                    className="min-h-[180px] outline-none"
+                    className="
+                    min-h-[180px]
+                    [&_.ProseMirror]:min-h-[180px]
+                    [&_.ProseMirror]:outline-none
+                    [&_.ProseMirror]:cursor-text"
+
+
                 />
             </div>
 
