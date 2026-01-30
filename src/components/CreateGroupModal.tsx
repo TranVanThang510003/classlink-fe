@@ -5,21 +5,22 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useCreateGroupChat } from "@/hooks/message/UseCreateGroupChat";
 import { useStudentsByClass } from "@/hooks/student/useStudentsByClass";
+import { useClassContext } from "@/contexts/ClassContext";
+
 
 type Props = {
     open: boolean;
     onClose: () => void;
     teacherId: string;
-    classes: { id: string; name: string }[];
 };
 
 export default function CreateGroupModal({
                                              open,
                                              onClose,
                                              teacherId,
-                                             classes,
                                          }: Props) {
     const { mutateAsync, isPending } = useCreateGroupChat();
+    const { classes } = useClassContext();
 
     const [classId, setClassId] = useState<string>();
     const [name, setName] = useState("");

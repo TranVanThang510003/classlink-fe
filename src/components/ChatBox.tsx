@@ -72,7 +72,7 @@ export default function ChatBox({ chatId, currentUserId, partnerId,chatName }: P
                 currentUserId,
                 trimmed,
                 replyTo
-                    ? { id: replyTo.id, text: replyTo.text, senderId: replyTo.senderId }
+                    ? { id: replyTo.id, text: replyTo.text, senderId: replyTo.senderId,senderName: replyTo.senderName }
                     : undefined
             );
 

@@ -46,7 +46,7 @@ const ManageStudentPage = () => {
     return (
         <div className="flex flex-col">
             <h2 className="text-left font-semibold text-3xl mb-6">
-                Manage Students
+                Manage Student Accounts
             </h2>
 
             {/* TOOL BAR */}

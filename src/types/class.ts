@@ -8,8 +8,8 @@ export type Class = {
     instructorId: string;
     studentIds: string[];
 
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
+    createdAt: Timestamp| null;
+    updatedAt: Timestamp| null;
 };
 
 export type CreateClassPayload = {

@@ -1,5 +1,6 @@
 import type {UploadFile} from "antd/es/upload/interface";
 import {AssignmentSubmissionAttachment} from "@/types/assignment";
+import {Timestamp} from "firebase/firestore";
 
 export type SubmitAssignmentPayload = {
     assignmentId: string;
@@ -27,7 +28,7 @@ export interface CreateAssignmentPayload {
         fileType: string;
         fileSize: number;
     }[];
-    dueDate?: Date | null;
+    dueDate?: Timestamp | null;
     createdBy: string;
 }
 

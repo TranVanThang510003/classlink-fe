@@ -10,7 +10,7 @@ import Sidebar from "@/components/layout/Sidebar";
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import {Toaster} from "react-hot-toast";
 import {AuthProvider} from "@/contexts/AuthContext";
-
+import { ClassProvider } from '@/contexts/ClassContext';
 const geistSans = Geist({
     variable: "--font-geist-sans",
     subsets: ["latin"],
@@ -38,6 +38,8 @@ const RootLayout = ({ children }: React.PropsWithChildren) =>  {
         <ReactQueryProvider>
             < AntdProvider>
                 <AuthProvider>
+                    <ClassProvider>
+
                 <div className="flex flex-col h-screen">
                     <Toaster position="top-right" reverseOrder={false}/>
 
@@ -56,7 +58,7 @@ const RootLayout = ({ children }: React.PropsWithChildren) =>  {
                         </main>
                     </div>
                 </div>
-
+                    </ClassProvider>
                 </AuthProvider>
             </AntdProvider>
         </ReactQueryProvider>

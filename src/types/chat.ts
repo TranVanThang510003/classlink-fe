@@ -13,7 +13,7 @@ export type Message = {
         senderId: string;
         senderName: string; // ✅
     } | null;
-    createdAt: Date|Timestamp|null;
+    createdAt: Timestamp|null;
 };
 
 export type CreateGroupChatPayload = {

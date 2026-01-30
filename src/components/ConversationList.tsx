@@ -56,7 +56,7 @@ export default function ConversationList({ items, currentUserId, onSelect, selec
 
                             className={`p-3 rounded-lg cursor-pointer ${
                                 selectedId === c.id
-                                    ? "bg-blue-50 border-l-4 border-blue-500"
+                                    ? "bg-blue-50 border-page.tsx-4 border-blue-500"
                                     : "bg-gray-50"
                             }`}
                         >

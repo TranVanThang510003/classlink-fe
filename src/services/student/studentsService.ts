@@ -13,11 +13,7 @@ import { db } from "@/lib/firebase";
 import type {AddStudentsToClassPayload, CreateStudentPayload} from "@/types/student";
 import {getAuth} from "firebase/auth";
 
-/**
- * Tạo tài khoản học sinh
- * - Chỉ tạo user
- * - Chưa gán vào class
- */
+
 export const createStudentAccount = async (
     payload: CreateStudentPayload
 ) => {

@@ -1,27 +1,17 @@
 'use client';
-import { useMyClasses } from "@/hooks/class/useMyClasses";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { useConversations } from "@/hooks/message/useConversations";
 import ConversationList from "@/components/ConversationList";
 import ChatBox from "@/components/ChatBox";
 import CreateGroupModal from "@/components/CreateGroupModal";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-
 import {Spin} from "antd";
-
-type User = {
-    uid: string;
-    role: "Student" | "instructor";
-    name?: string;
-    email?: string;
-};
-
+import {useAuthContext} from "@/contexts/AuthContext";
+import {useClassContext} from "@/contexts/ClassContext";
 
 
 export default function ChatPage() {
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
+
     const [selectedChat, setSelectedChat] = useState<{
         chatId?: string;
         partnerId?: string;
@@ -29,38 +19,12 @@ export default function ChatPage() {
     }>({});
 
     const [openCreateGroup, setOpenCreateGroup] = useState(false);
-
-// 🔐 AUTH LISTENER
-    useEffect(() => {
-        const auth = getAuth();
-
-        const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-            if (!firebaseUser) {
-                setUser(null);
-                setLoading(false);
-                return;
-            }
-
-            const tokenResult = await firebaseUser.getIdTokenResult();
-
-            setUser({
-                uid: firebaseUser.uid,
-                role: tokenResult.claims.role as "Student" | "instructor",
-                email: firebaseUser.email ?? undefined,
-            });
-            console.log("User set in chat page:", firebaseUser.uid, tokenResult.claims.role);
-
-            setLoading(false);
-        });
-
-        return () => unsub();
-    }, []);
-    const currentUserId = user?.uid;
-    const isTeacher = user?.role === "instructor";
+    const { uid, loading: authLoading,role } = useAuthContext();
+    const {  classes } = useClassContext();
+    const isTeacher = role === "instructor";
+    const currentUserId = uid;
 
     const conversations = useConversations(currentUserId || "");
-    const classes = useMyClasses(currentUserId);
-
     const handleSelect = (chatId: string, otherId: string, chatName: string) => {
         setSelectedChat({
             chatId,
@@ -69,13 +33,13 @@ export default function ChatPage() {
         });
     };
 
-    if (!user) {
+
+    if (authLoading) {
         return (
             <div className="flex h-[60vh] items-center justify-center">
                 <Spin size="large" />
             </div>
         );
-
     }
 
     return (
@@ -112,10 +76,7 @@ export default function ChatPage() {
                 open={openCreateGroup}
                 onClose={() => setOpenCreateGroup(false)}
                 teacherId={currentUserId!}
-                classes={classes.map((c) => ({
-                    id: c.id,
-                    name: c.name,
-                }))}
+
             />
             )}
         </>

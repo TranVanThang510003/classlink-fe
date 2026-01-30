@@ -7,13 +7,12 @@ import {
   FaBook,
   FaRegCommentDots,
   FaChalkboardTeacher,
-  FaClipboardCheck,
+  FaClipboardCheck, FaQuestionCircle,
 } from 'react-icons/fa';
 
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-
 
 type UserRole = 'student' | 'instructor';
 
@@ -41,86 +40,130 @@ const Sidebar = () => {
     return () => unsub();
   }, []);
 
+  if (!role) return null;
+
   /* =========================
-     MENU CONFIG
+     MENU GROUP CONFIG
   ========================= */
-  const menuItems = [
+  const menuGroups = [
+
     {
-      name: 'Assignments',
-      icon: <FaClipboardCheck />,
-      path: (role: UserRole) =>
-      role === 'instructor'
-          ? '/instructor/assignments'
-          : '/assignments',
-      roles: ['instructor', 'student'],
+      label: 'CLASS',
+      highlight: true, // 👉 nhóm phụ thuộc class
+      items: [
+        {
+          name: 'Assignments',
+          icon: <FaClipboardCheck />,
+          path:
+              role === 'instructor'
+                  ? '/instructor/assignments'
+                  : '/assignments',
+          roles: ['instructor', 'student'],
+        },
+        {
+          name: 'Tests & Quiz',
+          icon: <FaQuestionCircle />,
+          path:
+              role === 'instructor'
+                  ? '/instructor/quizzes'
+                  : '/quizzes',
+          roles: ['instructor', 'student'],
+        },
+        {
+          name: 'Documents',
+          icon: <FaBook />,
+          path: '/documents',
+          roles: ['instructor', 'student'],
+        },
+      ],
     },
     {
-      name: 'Manage Students',
-      icon: <FaUsers />,
-      path: '/instructor/manage-students',
-      roles: ['instructor'],
+      label: 'GLOBAL',
+      highlight: false,
+      items: [
+        {
+          name: 'Manage Classes',
+          icon: <FaChalkboardTeacher />,
+          path: '/instructor/manage-classes',
+          roles: ['instructor'],
+        },
+        {
+          name: 'Manage Student Accounts',
+          icon: <FaUsers />,
+          path: '/instructor/manage-student-accounts',
+          roles: ['instructor'],
+        },
+      ],
     },
     {
-      name: 'Manage Documents',
-      icon: <FaBook />,
-      path: '/documents',
-      roles: ['instructor', 'student'],
-    },
-    {
-      name: 'Manage Classes',
-      icon: <FaChalkboardTeacher />,
-      path: '/instructor/manage-classes',
-      roles: ['instructor'],
-    },
-    {
-      name: 'Message',
-      icon: <FaRegCommentDots />,
-      path: '/chat',
-      roles: ['instructor', 'student'],
+      label: 'COMMUNICATION',
+      highlight: false,
+      items: [
+        {
+          name: 'Message',
+          icon: <FaRegCommentDots />,
+          path: '/chat',
+          roles: ['instructor', 'student'],
+        },
+      ],
     },
   ];
 
-  if (!role) return null;
-
+  /* =========================
+     RENDER
+  ========================= */
   return (
       <aside className="w-72 h-screen bg-gradient-to-b from-[#0B1C3D] to-[#08183A] px-4 py-6">
-        {/* LOGO / TITLE */}
+        {/* LOGO */}
         <div className="text-white text-xl font-semibold px-3 mb-8">
           School Admin
         </div>
 
-        <nav>
-          <ul className="space-y-1">
-            {menuItems
-                .filter((item) => item.roles.includes(role))
-                .map((item) => {
-                  const resolvedPath =
-                      typeof item.path === 'function'
-                          ? item.path(role)
-                          : item.path;
+        <nav className="space-y-5">
+          {menuGroups.map((group) => (
+              <div key={group.label}>
+                {/* GROUP LABEL */}
+                <div className="px-4 mb-2 text-xs uppercase tracking-wider text-[#6C7AA5]">
+                  {group.label}
+                </div>
 
-                  const isActive = pathname.startsWith(resolvedPath);
+                {/* GROUP ITEMS */}
+                <ul
+                    className={
+                      group.highlight
+                          ? 'bg-white/5 rounded-xl py-1'
+                          : ''
+                    }
+                >
+                  {group.items
+                      .filter((item) => item.roles.includes(role))
+                      .map((item) => {
+                        const isActive =
+                            pathname === item.path ||
+                            pathname.startsWith(item.path + '/');
 
-                  return (
-                      <li
-                          key={item.name}
-                          onClick={() => router.push(resolvedPath)}
-                          className={`
-          flex items-center gap-3 px-4 py-3
-          rounded-md cursor-pointer transition-all
-          ${
-                              isActive
-                                  ? 'bg-[#F6C21C] text-[#08183A] font-semibold'
-                                  : 'text-[#A9B4D0] hover:bg-white/10 hover:text-white'
-                          }
-        `}
-                      >
-                        <span className="text-lg">{item.icon}</span>
-                        <span className="text-sm">{item.name}</span>
-                      </li>
-                  );
-                })}
-          </ul>
+                        return (
+                            <li
+                                key={item.name}
+                                onClick={() => router.push(item.path)}
+                                className={`
+                        flex items-center gap-3 px-4 py-3 mx-1
+                        rounded-lg cursor-pointer transition-all
+                        ${
+                                    isActive
+                                        ? 'bg-[#F6C21C] text-[#08183A] font-semibold'
+                                        : 'text-[#A9B4D0] hover:bg-white/10 hover:text-white'
+                                }
+                      `}
+                            >
+                              <span className="text-lg">{item.icon}</span>
+                              <span className="text-sm">{item.name}</span>
+                            </li>
+                        );
+                      })}
+                </ul>
+              </div>
+          ))}
         </nav>
       </aside>
   );

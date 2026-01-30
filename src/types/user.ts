@@ -9,8 +9,8 @@ export type User = {
     phone: string;
     address: string;
     role: UserRole;
-    createdAt?: Date| Timestamp| null;
+    createdAt?:  Timestamp| null;
     classIds: string[];
     createdBy: string;
-    updatedAt?: Date| Timestamp| null;
+    updatedAt?: Timestamp| null;
 };

@@ -141,7 +141,7 @@ export default function MessageList({ messages, currentUserId, onReply }: Props)
                                                 <div className="font-medium">
                                                     {m.replyTo.senderId === currentUserId
                                                         ? 'You'
-                                                        :  m.senderName}
+                                                        : m.replyTo.senderName}
                                                 </div>
                                                 <div className="truncate">
                                                     {m.replyTo.text}

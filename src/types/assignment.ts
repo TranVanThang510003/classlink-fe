@@ -16,10 +16,10 @@ export type Assignment = {
     // luôn là array (dễ render)
     attachments?: AssignmentAttachment[];
 
-    dueDate?: Date |Timestamp| null;
+    dueDate?: Timestamp| null;
     status: "draft" | "published";
     createdBy: string;
-    createdAt?: Date |Timestamp| null;
+    createdAt?: Timestamp| null;
 };
 export interface StudentAssignment extends Assignment {
     submission?: AssignmentSubmission | null;
@@ -31,12 +31,9 @@ export type AssignmentSubmission = {
 
     // HTML từ TipTap
     content?: string;
-
     attachments?: AssignmentSubmissionAttachment[];
-
     submittedBy: string;
-    submittedAt?: Date | null;
-
+    submittedAt?: Timestamp | null ;
     score?: number;
     teacherComment?: string;
 };
@@ -56,8 +53,8 @@ export type TeacherSubmissionListItem = {
     classId: string;
     submittedBy: string;
     studentName?: string;
-    submittedAt: Date | null;
-    dueDate?: Date | Timestamp | null;
+    submittedAt:Timestamp | null;
+    dueDate?:  Timestamp | null;
     score?: number;
     feedback?: string;
 };
