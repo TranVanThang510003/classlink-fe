@@ -66,7 +66,7 @@ const Sidebar = () => {
           path:
               role === 'instructor'
                   ? '/instructor/quizzes'
-                  : '/quizzes',
+                  : '/students/tests',
           roles: ['instructor', 'student'],
         },
         {

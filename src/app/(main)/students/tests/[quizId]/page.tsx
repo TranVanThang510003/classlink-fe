@@ -1,30 +1,34 @@
 'use client';
+
 import { useParams } from "next/navigation";
-import { useQuiz } from "@/hooks/quiz/useQuiz";
-import { useSubmitQuiz } from "@/hooks/quiz/useSubmitQuiz";
-import { useAuthContext } from "@/contexts/AuthContext";
+import { Spin } from "antd";
+
 import QuizPlayer from "@/components/quizzes/QuizPlayer";
+import { useQuiz } from "@/hooks/quiz/useQuiz";
+import { useAuthContext } from "@/contexts/AuthContext";
 
-export default function DoQuizPage() {
-  const { quizId } = useParams();
-  const { quiz, questions, loading } = useQuiz(quizId as string);
-  const { submit } = useSubmitQuiz();
-  const { uid } = useAuthContext();
+export default function TestQuizPage() {
+    const params = useParams();
+    const quizId = params?.quizId as string;
 
-  if (loading || !quiz) return null;
+    const { uid } = useAuthContext();
+    const { quiz, questions, loading } = useQuiz(quizId);
 
-  return (
-    <QuizPlayer
-      questions={questions}
-      onSubmit={async (answers) => {
-        const score = await submit({
-          quizId: quiz.id,
-          studentId: uid!,
-          answers,
-          correctAnswers: questions.map(q => q.correctIndex),
-        });
-        alert(`Your score: ${score}/${questions.length}`);
-      }}
-    />
-  );
+    if (loading) return <Spin />;
+
+    if (!quiz || questions.length === 0) {
+        return (
+            <div className="text-gray-400 italic">
+                Quiz not found or no questions
+            </div>
+        );
+    }
+
+    return (
+        <QuizPlayer
+            quiz={quiz}
+            questions={questions}
+            studentId={uid}
+        />
+    );
 }

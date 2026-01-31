@@ -1,5 +1,6 @@
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import toast from "react-hot-toast";
 
 export const useSubmitQuiz = () => {
     const submit = async ({
@@ -25,7 +26,7 @@ export const useSubmitQuiz = () => {
             submittedAt: serverTimestamp(),
         });
 
-        return score;
+        toast.success(`Submitted! Score: ${score}`);
     };
 
     return { submit };
