@@ -1,33 +1,35 @@
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { useMutation } from "@tanstack/react-query";
+import { submitQuiz } from "@/services/quiz/quizService";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+
+type SubmitQuizPayload = {
+    classId: string;
+    quizId: string;
+    answers: number[];
+    score: number;
+    correctCount: number;
+    totalQuestions: number;
+};
 
 export const useSubmitQuiz = () => {
-    const submit = async ({
-                              quizId,
-                              studentId,
-                              answers,
-                              correctAnswers,
-                          }: {
-        quizId: string;
-        studentId: string;
-        answers: number[];
-        correctAnswers: number[];
-    }) => {
-        const score = answers.filter(
-            (a, i) => a === correctAnswers[i]
-        ).length;
+    const router = useRouter();
 
-        await addDoc(collection(db, "quizSubmissions"), {
-            quizId,
-            studentId,
-            answers,
-            score,
-            submittedAt: serverTimestamp(),
-        });
+    return useMutation({
+        mutationFn: (payload: SubmitQuizPayload) =>
+            submitQuiz(payload),
 
-        toast.success(`Submitted! Score: ${score}`);
-    };
+        onSuccess: (_, variables) => {
+            toast.success("Nộp bài thành công!");
 
-    return { submit };
+            router.push(
+                `/students/tests/${variables.quizId}/result`
+            );
+        },
+
+        onError: (error) => {
+            console.log(error)
+            toast.error("Nộp bài thất bại");
+        },
+    });
 };

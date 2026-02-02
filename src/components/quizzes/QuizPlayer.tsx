@@ -17,7 +17,8 @@ type Props = {
 };
 
 const MAX_VISIBLE = 14;
-const WARNING_TIME = 300; // 1 phút
+const WARNING_TIME = 300;
+
 
 export default function QuizPlayer({ quiz, questions, studentId }: Props) {
     const [current, setCurrent] = useState(0);
@@ -27,7 +28,7 @@ export default function QuizPlayer({ quiz, questions, studentId }: Props) {
     const [remain, setRemain] = useState(quiz.duration * 60);
     const [showAll, setShowAll] = useState(false);
 
-    const { submit, loading } = useSubmitQuiz();
+    const { mutate: submitQuiz, isPending } = useSubmitQuiz();
     const question = questions[current];
 
     /* ===== TIMER ===== */
@@ -52,10 +53,42 @@ export default function QuizPlayer({ quiz, questions, studentId }: Props) {
         }
     }, [showAll, current]);
 
-    const onSubmit = async () => {
-        const correctAnswers = questions.map(q => q.correctIndex);
-        await submit({ quizId: quiz.id, studentId, answers, correctAnswers });
+    const calculateScore = () => {
+        let correctCount = 0;
+        const totalQuestions = questions.length;
+
+        questions.forEach((q, index) => {
+            if (answers[index] === q.correctAnswer) {
+                correctCount++;
+            }
+        });
+
+        const score = Number(
+            ((correctCount / totalQuestions) * 10).toFixed(2)
+        );
+
+        return {
+            score,
+            correctCount,
+            totalQuestions,
+        };
     };
+
+
+    const onSubmit = () => {
+        const { score, correctCount } = calculateScore();
+
+        submitQuiz({
+            quizId: quiz.id,
+            classId: quiz.classId,
+            totalQuestions: questions.length,
+            answers,
+            score,
+            correctCount,
+        });
+    };
+
+
 
     if (!question) return <Spin />;
 
@@ -82,7 +115,7 @@ export default function QuizPlayer({ quiz, questions, studentId }: Props) {
                     type="primary"
                     className="!bg-[#1f3d2b]"
                     onClick={onSubmit}
-                    loading={loading}
+                    loading={isPending}
                 >
                     SUBMIT
                 </Button>

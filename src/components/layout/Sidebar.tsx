@@ -65,7 +65,7 @@ const Sidebar = () => {
           icon: <FaQuestionCircle />,
           path:
               role === 'instructor'
-                  ? '/instructor/quizzes'
+                  ? '/instructor/tests'
                   : '/students/tests',
           roles: ['instructor', 'student'],
         },

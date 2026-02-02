@@ -5,6 +5,7 @@ export type Quiz = {
     duration: number; // minutes
     published: boolean;
     createdBy: string;
+    maxAttempts: number;
     createdAt: any;
 };
 
@@ -13,7 +14,7 @@ export type QuizQuestion = {
     quizId: string;
     question: string;
     options: string[];
-    correctIndex: number;
+    correctAnswer: number;
 };
 
 export type QuizSubmission = {

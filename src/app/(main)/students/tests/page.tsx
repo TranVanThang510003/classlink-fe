@@ -54,18 +54,74 @@ export default function StudentQuizListPage() {
                             dayjs(v?.toDate?.()).format("DD/MM/YYYY"),
                     },
                     {
-                        title: "Action",
+                        title: "Attempts",
                         render: (_, record) => (
-                            <a
-                                className="text-blue-600 hover:underline"
-                                onClick={() =>
-                                    router.push(`/students/tests/${record.id}`)
-                                }
-                            >
-                                Start Quiz
-                            </a>
+                            <span>
+                              {record.attempts} / {record.maxAttempts}
+                            </span>
                         ),
                     },
+                    {
+                        title: "Status",
+                        render: (_, record) => (
+                            <Tag color={record.isLocked ? "red" : "green"}>
+                                {record.isLocked ? "Completed" : "Available"}
+                            </Tag>
+                        ),
+                    },
+
+                    {
+                        title: "Score",
+                        render: (_, record) => (
+                            record.bestScore != null
+                                ? <strong>{record.bestScore}/ 10</strong>
+                                : <span className="text-gray-400">—</span>
+                        ),
+                    },
+
+                    {
+                        title: "Action",
+                        render: (_, record) => {
+                            const hasAttempted = record.attempts > 0;
+                            const isLocked = record.isLocked;
+
+                            return (
+                                <div className="flex gap-3">
+                                    {/* START QUIZ */}
+                                    <a
+                                        className={`
+            ${isLocked
+                                            ? "text-gray-400 cursor-not-allowed"
+                                            : "text-blue-600 hover:underline"}
+          `}
+                                        onClick={() => {
+                                            if (isLocked) return;
+                                            router.push(`/student/quizzes/${record.id}`);
+                                        }}
+                                    >
+                                        Start Quiz
+                                    </a>
+
+                                    {/* VIEW RESULT */}
+                                    <a
+                                        className={`
+                                          ${!hasAttempted
+                                            ? "text-gray-400 cursor-not-allowed"
+                                            : "text-emerald-600 hover:underline"}
+                                             `}
+                                        onClick={() => {
+                                            if (!hasAttempted) return;
+                                            router.push(`/students/tests/${record.id}/result`);
+                                        }}
+                                    >
+                                        View Answers
+                                    </a>
+                                </div>
+                            );
+                        },
+                    }
+
+
                 ]}
             />
         </div>

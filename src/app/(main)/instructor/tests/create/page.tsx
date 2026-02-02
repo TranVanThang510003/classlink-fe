@@ -1,48 +1,41 @@
 'use client';
 
 import { useState } from "react";
-import { Button, Input, Spin, Tag } from "antd";
+import { Button, Input, Modal } from "antd";
 import toast from "react-hot-toast";
-import { createQuiz } from "@/services/quiz/createQuiz";
-import {useClassContext} from "@/contexts/ClassContext";
-import {useAuthContext} from "@/contexts/AuthContext";
 
-function SectionCard({
-                         step,
-                         title,
-                         extra,
-                         children,
-                     }: {
-    step: number;
-    title: string;
-    extra?: React.ReactNode;
-    children: React.ReactNode;
-}) {
-    return (
-        <div className="rounded-xl border border-emerald-300 bg-white">
-            <div className="flex items-center justify-between border-b border-emerald-200 px-4 py-3">
-                <div className="flex items-center gap-3">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-500 text-sm font-semibold text-white">
-                        {step}
-                    </div>
-                    <h3 className="font-semibold text-emerald-700">
-                        {title}
-                    </h3>
-                </div>
-                {extra}
-            </div>
-            <div className="p-4 space-y-4">{children}</div>
-        </div>
-    );
-}
+import { quizService } from "@/services/quiz/quizService";
+import { useClassContext } from "@/contexts/ClassContext";
+import { useAuthContext } from "@/contexts/AuthContext";
+
+import SectionCard from "@/components/quizzes/SectionCard";
+import QuizSettings from "@/components/quizzes/QuizSettings";
+
+type Question = {
+    id: string;
+    text: string;
+    options: string[];
+    correctAnswer: number;
+};
 
 export default function CreateQuizPage() {
+    /* ================= STATE ================= */
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [questions, setQuestions] = useState<any[]>([]);
+    const [questions, setQuestions] = useState<Question[]>([]);
+    const [duration, setDuration] = useState(15);
+    const [maxAttempts, setMaxAttempts] = useState(1);
+
+    const [status, setStatus] = useState<"draft" | "published">("draft");
+    const [openAt, setOpenAt] = useState<Date | null>(null);
+    const [closeAt, setCloseAt] = useState<Date | null>(null);
+
     const [loading, setLoading] = useState(false);
-    const {uid} = useAuthContext()
-    const {activeClassId} = useClassContext()
+
+    const { uid } = useAuthContext();
+    const { activeClassId } = useClassContext();
+
+    /* ================= QUESTION ================= */
     const addQuestion = () => {
         setQuestions(qs => [
             ...qs,
@@ -55,12 +48,13 @@ export default function CreateQuizPage() {
         ]);
     };
 
-    const updateQuestion = (id: string, data: any) => {
+    const updateQuestion = (id: string, data: Partial<Question>) => {
         setQuestions(qs =>
             qs.map(q => (q.id === id ? { ...q, ...data } : q))
         );
     };
 
+    /* ================= SUBMIT ================= */
     const submit = async () => {
         if (!title.trim()) {
             toast.error("Quiz title is required");
@@ -71,25 +65,36 @@ export default function CreateQuizPage() {
             toast.error("Add at least one question");
             return;
         }
+
         if (!activeClassId) {
-            throw new Error("classId is required");
+            toast.error("Class not selected");
+            return;
         }
+
+        const ok = window.confirm(
+            `Create quiz?\n\nTitle: ${title}\nStatus: ${status}`
+        );
+
+        if (!ok) return;
 
         setLoading(true);
 
         try {
-            const quizId = await createQuiz({
+            await quizService({
                 title,
                 description,
-                classId: activeClassId!,   // 👈 cực quan trọng
-                createdBy: uid!,           // 👈 cực quan trọng
+                classId: activeClassId,
+                duration,
+                maxAttempts,
+                status,
+                openAt,
+                closeAt,
+                createdBy: uid!,
                 questions,
             });
 
-
             toast.success("Quiz created successfully");
-            console.log("QuizId:", quizId);
-            // router.push(`/instructor/quizzes/${quizId}`) nếu muốn
+            window.history.back(); // hoặc router.back()
         } catch (err) {
             console.error(err);
             toast.error("Failed to create quiz");
@@ -98,11 +103,12 @@ export default function CreateQuizPage() {
         }
     };
 
+    /* ================= UI ================= */
     return (
         <div className="mx-auto max-w-4xl space-y-6">
             <h2 className="text-3xl font-semibold">Quiz Builder</h2>
 
-            {/* STEP 1 */}
+            {/* STEP 1: INFO */}
             <SectionCard step={1} title="Quiz Info">
                 <Input
                     placeholder="Quiz title"
@@ -115,18 +121,47 @@ export default function CreateQuizPage() {
                     value={description}
                     onChange={e => setDescription(e.target.value)}
                 />
+                <Input
+                    type="number"
+                    min={1}
+                    addonAfter="minutes"
+                    placeholder="Duration"
+                    value={duration}
+                    onChange={e => setDuration(Number(e.target.value))}
+                />
+                <Input
+                    type="number"
+                    min={1}
+                    addonAfter="attempts"
+                    placeholder="Max attempts"
+                    value={maxAttempts}
+                    onChange={e => setMaxAttempts(Number(e.target.value))}
+                />
             </SectionCard>
 
-            {/* STEP 2 */}
+            {/* STEP 2: PUBLISH */}
+            <SectionCard step={2} title="Publish Settings">
+                <QuizSettings
+                    status={status}
+                    setStatus={setStatus}
+                    openAt={openAt}
+                    setOpenAt={setOpenAt}
+                    closeAt={closeAt}
+                    setCloseAt={setCloseAt}
+                />
+            </SectionCard>
+
+            {/* STEP 3: QUESTIONS */}
             <SectionCard
-                step={2}
+                step={3}
                 title={`Questions (${questions.length})`}
-                extra={
-                    <Button onClick={addQuestion}>+ Add Question</Button>
-                }
+                extra={<Button onClick={addQuestion}>+ Add Question</Button>}
             >
                 {questions.map((q, index) => (
-                    <div key={q.id} className="rounded-lg border p-4 space-y-3">
+                    <div
+                        key={q.id}
+                        className="rounded-lg border p-4 space-y-3"
+                    >
                         <Input
                             placeholder={`Question ${index + 1}`}
                             value={q.text}
@@ -135,13 +170,15 @@ export default function CreateQuizPage() {
                             }
                         />
 
-                        {q.options.map((opt: string, i: number) => (
+                        {q.options.map((opt, i) => (
                             <div key={i} className="flex items-center gap-2">
                                 <input
                                     type="radio"
                                     checked={q.correctAnswer === i}
                                     onChange={() =>
-                                        updateQuestion(q.id, { correctAnswer: i })
+                                        updateQuestion(q.id, {
+                                            correctAnswer: i,
+                                        })
                                     }
                                 />
                                 <Input
@@ -150,7 +187,9 @@ export default function CreateQuizPage() {
                                     onChange={e => {
                                         const newOpts = [...q.options];
                                         newOpts[i] = e.target.value;
-                                        updateQuestion(q.id, { options: newOpts });
+                                        updateQuestion(q.id, {
+                                            options: newOpts,
+                                        });
                                     }}
                                 />
                             </div>
@@ -159,12 +198,12 @@ export default function CreateQuizPage() {
                 ))}
             </SectionCard>
 
-            <div className="flex justify-end">
-                <Button
-                    type="primary"
-                    loading={loading}
-                    onClick={submit}
-                >
+            {/* ACTION */}
+            <div className="flex justify-end gap-2">
+                <Button onClick={() => window.history.back()} disabled={loading}>
+                    Cancel
+                </Button>
+                <Button type="primary" onClick={submit} loading={loading}>
                     Create Quiz
                 </Button>
             </div>
