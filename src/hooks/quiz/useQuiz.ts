@@ -7,29 +7,17 @@ import {
     getDocs,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { Quiz, QuizQuestion } from "@/types/quiz";
+import { Timestamp } from "firebase/firestore";
+
+type QuizFormData = Quiz & {
+    questions: QuizQuestion[];
+};
 
 export const useQuiz = (quizId?: string) => {
-    const [quiz, setQuiz] = useState<Quiz | null>(null);
-    const [questions, setQuestions] = useState<QuizQuestion[]>([]);
+    const [quiz, setQuiz] = useState<QuizFormData | null>(null);
     const [loading, setLoading] = useState(true);
-
-    const fetchQuestions = useCallback(async () => {
-        if (!quizId) return;
-
-        const q = query(
-            collection(db, "quizQuestions"),
-            where("quizId", "==", quizId)
-        );
-
-        const snap = await getDocs(q);
-        setQuestions(
-            snap.docs.map(
-                d => ({ id: d.id, ...d.data() } as QuizQuestion)
-            )
-        );
-    }, [quizId]);
 
     useEffect(() => {
         if (!quizId) return;
@@ -37,6 +25,7 @@ export const useQuiz = (quizId?: string) => {
         const fetchAll = async () => {
             setLoading(true);
 
+            /* ===== QUIZ ===== */
             const quizSnap = await getDoc(doc(db, "quizzes", quizId));
             if (!quizSnap.exists()) {
                 setQuiz(null);
@@ -44,22 +33,40 @@ export const useQuiz = (quizId?: string) => {
                 return;
             }
 
+            const quizData = quizSnap.data();
+
+            /* ===== QUESTIONS ===== */
+            const q = query(
+                collection(db, "quizQuestions"),
+                where("quizId", "==", quizId)
+            );
+            const questionSnap = await getDocs(q);
+
+            const questions = questionSnap.docs.map(
+                d => ({ id: d.id, ...d.data() } as QuizQuestion)
+            );
+
+            /* ===== MERGE + NORMALIZE ===== */
             setQuiz({
                 id: quizSnap.id,
-                ...quizSnap.data(),
-            } as Quiz);
+                ...quizData,
+                openAt: quizData.openAt instanceof Timestamp
+                    ? quizData.openAt.toDate()
+                    : null,
+                closeAt: quizData.closeAt instanceof Timestamp
+                    ? quizData.closeAt.toDate()
+                    : null,
+                questions,
+            } as QuizFormData);
 
-            await fetchQuestions();
             setLoading(false);
         };
 
         fetchAll();
-    }, [quizId, fetchQuestions]);
+    }, [quizId]);
 
     return {
         quiz,
-        questions,
         loading,
-        refetchQuestions: fetchQuestions,
     };
 };

@@ -15,6 +15,7 @@ type StudentQuiz = Quiz & {
     isLocked: boolean;
     bestScore?: number;
     totalQuestions: number;
+    isNotOpenYet: boolean;
 };
 
 export const useQuizzes = (
@@ -85,16 +86,32 @@ export const useQuizzes = (
                         )
                         : null;
 
+                const now = Date.now();
+
+                const openTime = quiz.openAt?.toDate?.().getTime();
+                const closeTime = quiz.closeAt?.toDate?.().getTime();
+
+                const isNotOpenYet = !!openTime && now < openTime;
+                const isClosed = !!closeTime && now > closeTime;
+
                 return {
                     ...quiz,
                     attempts,
                     maxAttempts,
-                    isLocked: attempts >= maxAttempts,
+
+                    isNotOpenYet,
+                    isClosed,
+
+                    isLocked:
+                        isNotOpenYet ||
+                        isClosed ||
+                        attempts >= maxAttempts,
 
                     bestScore: bestSubmission?.score,
                     totalQuestions: bestSubmission?.totalQuestions ?? 0,
                 };
             });
+
 
 
 

@@ -16,7 +16,7 @@ instance.interceptors.request.use(async (config) => {
 });
 
 
-// Add a response interceptor
+// Add useInstructorQuizzes.ts response interceptor
 instance.interceptors.response.use(
   function (response) {
 

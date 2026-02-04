@@ -136,7 +136,7 @@ export default function SubmitAssignment({
         const html = editor.getHTML();
 
         if (!html.trim() && files.length === 0) {
-            toast.error("Please write something or attach a file");
+            toast.error("Please write something or attach useInstructorQuizzes.ts file");
             return;
         }
 

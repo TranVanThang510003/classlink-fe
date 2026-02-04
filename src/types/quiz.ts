@@ -3,10 +3,14 @@ export type Quiz = {
     classId: string;
     title: string;
     duration: number; // minutes
-    published: boolean;
+    status: "draft" | "published";
+    description: string;
     createdBy: string;
     maxAttempts: number;
     createdAt: any;
+    closeAt?: any;
+    openAt?: any;
+    totalQuestions: number;
 };
 
 export type QuizQuestion = {

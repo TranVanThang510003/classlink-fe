@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Progress, Spin } from "antd";
+import { Button, Progress, Spin, Tag, Divider } from "antd";
 import { useRouter, useParams } from "next/navigation";
 import { useQuizResult } from "@/hooks/quiz/useQuizResult";
 
@@ -14,55 +14,86 @@ export default function QuizResultPage() {
     if (loading) return <Spin fullscreen />;
 
     if (!result) {
-        return <p className="text-center">Không tìm thấy kết quả</p>;
+        return (
+            <div className="min-h-[60vh] flex items-center justify-center text-gray-400">
+                Result not found
+            </div>
+        );
     }
 
-    const { score,correctCount, total } = result;
-    const percent = Math.round((score / total) * 100);
+    const {
+        score,
+        correctCount,
+        total,
 
-    const getTheme = () => {
-        if (percent >= 80)
-            return { color: "#2563eb", text: "Excellent 🎉" };
-        if (percent >= 50)
-            return { color: "#16a34a", text: "Good 👍" };
-        return { color: "#dc2626", text: "Try again 💪" };
-    };
+    } = result;
 
-    const theme = getTheme();
+    const percent = Math.round((correctCount / total) * 100);
+    const isPassed = percent >= 50;
 
     return (
-        <div className="min-h-[70vh] flex items-center justify-center">
-            <div className="bg-white p-10 rounded-2xl shadow text-center w-[360px]">
+        <div className="min-h-[70vh] flex items-center justify-center bg-gray-50 px-4">
+            <div className="bg-white w-full max-w-md rounded-xl border shadow-sm p-8">
 
-                <Progress
-                    type="circle"
-                    percent={percent}
-                    strokeWidth={10}
-                    strokeColor={theme.color}
-                    format={() => (
-                        <div>
-                            <p className="text-sm">Your Score</p>
-                            <p className="text-2xl font-bold">
-                                {correctCount}/{total}
-                            </p>
+                {/* HEADER */}
+                <div className="mb-6">
+                    <h2 className="text-xl font-semibold">
+                        Quiz Result
+                    </h2>
+                    <p className="text-sm text-gray-500">
+                        This quiz has been completed
+                    </p>
+                </div>
+                <div className=" w-full flex justify-center items-center">
+
+                    {/* SCORE */}
+                    <div className="flex items-center gap-6">
+                        <Progress
+                            type="circle"
+                            percent={percent}
+                            strokeWidth={10}
+                            width={120}
+                            strokeColor={isPassed ? "#2563eb" : "#dc2626"}
+                            format={() => (
+                                <span className="text-lg font-semibold">
+                                    {percent}%
+                                </span>
+                            )}
+                        />
+
+                        <div className="flex flex-col gap-2">
+                            <div>
+                                <p className="text-sm text-gray-500">
+                                    Correct answers
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    {correctCount} / {total}
+                                </p>
+                            </div>
+
+                            <Tag color={isPassed ? "blue" : "red"}>
+                                {isPassed ? "Passed" : "Failed"}
+                            </Tag>
                         </div>
-                    )}
-                />
+                    </div>
+                </div>
 
-                <p
-                    className="mt-6 text-lg font-semibold"
-                    style={{ color: theme.color }}
-                >
-                    {theme.text}
-                </p>
 
-                <Button
-                    className="mt-8"
-                    type="primary"
-                    onClick={() => router.push("/student/quizzes")}
-                >
-                    Quay lại
-                </Button>
+                <Divider />
+
+
+
+                {/* ACTION */}
+                <div className="mt-6">
+                    <Button
+                        block
+                        size="large"
+                        type="primary"
+                        onClick={() => router.push("/students/tests")}
+                    >
+                        Back to quizzes
+                    </Button>
+                </div>
             </div>
         </div>
     );

@@ -10,7 +10,7 @@ export default function SectionCard({
     children: React.ReactNode;
 }) {
     return (
-        <div className="rounded-xl border border-emerald-300 bg-white">
+        <div className="rounded-xl border border-emerald-300 bg-white ">
             <div className="flex items-center justify-between border-b border-emerald-200 px-4 py-3">
                 <div className="flex items-center gap-3">
                     <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-500 text-sm font-semibold text-white">

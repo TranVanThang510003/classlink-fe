@@ -31,7 +31,7 @@ export default function CreateGroupModal({
 
     const handleCreate = async () => {
         if (!classId) {
-            toast.error("Please select a class");
+            toast.error("Please select useInstructorQuizzes.ts class");
             return;
         }
 

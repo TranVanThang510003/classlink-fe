@@ -110,7 +110,7 @@ const ManageClassStudentsPage = () => {
                             </span>
                         </>
                     ) : (
-                        "Select a class to view students"
+                        "Select useInstructorQuizzes.ts class to view students"
                     )}
                 </div>
 

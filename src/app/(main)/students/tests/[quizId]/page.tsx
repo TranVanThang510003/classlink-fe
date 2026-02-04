@@ -12,11 +12,11 @@ export default function TestQuizPage() {
     const quizId = params?.quizId as string;
 
     const { uid } = useAuthContext();
-    const { quiz, questions, loading } = useQuiz(quizId);
+    const { quiz, loading } = useQuiz(quizId);
 
     if (loading) return <Spin />;
 
-    if (!quiz || questions.length === 0) {
+    if (!quiz || quiz.questions.length === 0) {
         return (
             <div className="text-gray-400 italic">
                 Quiz not found or no questions
@@ -27,7 +27,7 @@ export default function TestQuizPage() {
     return (
         <QuizPlayer
             quiz={quiz}
-            questions={questions}
+            questions={quiz.questions}
             studentId={uid}
         />
     );

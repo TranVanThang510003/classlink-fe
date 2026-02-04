@@ -35,7 +35,7 @@ export const mockQuestions: QuizQuestion[] = [
     {
         id: "q4",
         quizId: "quiz_001",
-        question: "Which word is a verb?",
+        question: "Which word is useInstructorQuizzes.ts verb?",
         options: ["Run", "Blue", "Happiness", "Quick"],
         correctIndex: 0,
     },
@@ -75,7 +75,7 @@ export const mockQuestions: QuizQuestion[] = [
     {
         id: "q9",
         quizId: "quiz_001",
-        question: "Which is a noun?",
+        question: "Which is useInstructorQuizzes.ts noun?",
         options: ["Run", "Quick", "Happiness", "Blue"],
         correctIndex: 2,
     },
@@ -110,7 +110,7 @@ export const mockQuestions: QuizQuestion[] = [
     {
         id: "q4",
         quizId: "quiz_001",
-        question: "Which word is a verb?",
+        question: "Which word is useInstructorQuizzes.ts verb?",
         options: ["Run", "Blue", "Happiness", "Quick"],
         correctIndex: 0,
     },
@@ -150,7 +150,7 @@ export const mockQuestions: QuizQuestion[] = [
     {
         id: "q9",
         quizId: "quiz_001",
-        question: "Which is a noun?",
+        question: "Which is useInstructorQuizzes.ts noun?",
         options: ["Run", "Quick", "Happiness", "Blue"],
         correctIndex: 2,
     },
@@ -185,7 +185,7 @@ export const mockQuestions: QuizQuestion[] = [
     {
         id: "q4",
         quizId: "quiz_001",
-        question: "Which word is a verb?",
+        question: "Which word is useInstructorQuizzes.ts verb?",
         options: ["Run", "Blue", "Happiness", "Quick"],
         correctIndex: 0,
     },
@@ -225,7 +225,7 @@ export const mockQuestions: QuizQuestion[] = [
     {
         id: "q9",
         quizId: "quiz_001",
-        question: "Which is a noun?",
+        question: "Which is useInstructorQuizzes.ts noun?",
         options: ["Run", "Quick", "Happiness", "Blue"],
         correctIndex: 2,
     },
