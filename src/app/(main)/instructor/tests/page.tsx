@@ -83,8 +83,13 @@ export default function InstructorQuizListPage() {
 
 
     if (loading) {
-        return <Spin />;
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <Spin size="large" />
+            </div>
+        );
     }
+
 
     return (
         <div className="flex flex-col gap-6">

@@ -20,7 +20,7 @@ type UserProfile = {
 type AuthContextType = {
     user: User | null;
     profile: UserProfile | null;
-    uid: string ;
+    uid: string | null;
     role: Role | null;
     loading: boolean;
     isLoggedIn: boolean;

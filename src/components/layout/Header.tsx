@@ -27,7 +27,8 @@ const Header = () => {
     const handleLogout = async () => {
         await signOut(auth);
         localStorage.removeItem('activeClassId');
-        router.push('/login');
+        router.replace('/login');
+
     };
 
     const firstLetter =
@@ -70,7 +71,7 @@ const Header = () => {
                 </div>
 
                 {showMenu && (
-                    <div className="absolute right-6 top-14 w-36 bg-white rounded shadow border text-sm">
+                    <div className="absolute mt-3 right-6 top-14 w-36 bg-white rounded shadow border-yellow-300 border text-sm">
                         <button
                             onClick={handleLogout}
                             className="w-full text-left px-4 py-2 hover:bg-gray-100"

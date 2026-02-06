@@ -3,25 +3,8 @@
 import { Table, Tag, Button } from "antd";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
+import {StudentSubmissionGroup, Submission} from "@/types/quiz";
 
-type Submission = {
-    id: string;
-    quizId: string;
-    classId: string;
-    studentId: string;
-    student?: {
-        name?: string;
-        email?: string;
-    };
-    correctCount: number;
-    totalQuestions: number;
-    submittedAt: any; // Firestore Timestamp
-};
-
-type GroupedSubmission = Submission & {
-    attempts: Submission[];
-    attemptCount: number;
-};
 
 type Props = {
     quizId: string;
@@ -95,7 +78,7 @@ export default function QuizSubmissionTable({
                             size="small"
                             onClick={() =>
                                 router.push(
-                                    `/instructor/quizzes/${quizId}/students/${r.studentId}`
+                                    `/instructor/tests/${quizId}/submissions/${r.id}`
                                 )
                             }
                         >
@@ -162,7 +145,7 @@ function AttemptsTable({
                             size="small"
                             onClick={() =>
                                 router.push(
-                                    `/instructor/quizzes/${quizId}/submissions/${r.id}`
+                                    `/instructor/tests/${quizId}/submissions/${r.id}`
                                 )
                             }
                         >
@@ -181,8 +164,8 @@ function AttemptsTable({
 
 function groupByStudent(
     submissions: Submission[]
-): GroupedSubmission[] {
-    const map = new Map<string, GroupedSubmission>();
+): StudentSubmissionGroup[] {
+    const map = new Map<string, StudentSubmissionGroup>();
 
     submissions.forEach(s => {
         const prev = map.get(s.studentId);

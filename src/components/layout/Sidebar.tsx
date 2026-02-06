@@ -72,9 +72,13 @@ const Sidebar = () => {
         {
           name: 'Documents',
           icon: <FaBook />,
-          path: '/documents',
+          path:
+              role === 'instructor'
+                  ? '/instructor/documents'
+                  : 'students/documents',
           roles: ['instructor', 'student'],
         },
+
       ],
     },
     {

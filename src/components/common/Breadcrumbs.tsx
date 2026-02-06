@@ -6,6 +6,7 @@ import { Breadcrumb } from 'antd';
 
 const routeNameMap: Record<string, string> = {
     assignments: 'Assignments',
+    tests: 'Tests & Quiz',
     submissions: 'Submissions',
     classes: 'Classes',
 };
@@ -13,23 +14,24 @@ const routeNameMap: Record<string, string> = {
 export default function Breadcrumbs() {
     const pathname = usePathname();
 
-    const segments = pathname
-        .split('/')
-        .filter(Boolean)
-        // ✅ Ẩn ID (Firestore id thường dài + không có trong map)
-        .filter(seg => routeNameMap[seg]);
+    const segments = pathname.split('/').filter(Boolean);
 
-    const items = segments.map((segment, index) => {
-        const href = '/' + segments.slice(0, index + 1).join('/');
+    const items = segments
+        // ❗ bỏ prefix phân quyền
+        .filter(seg => seg !== 'instructor')
+        // ❗ bỏ firestore id
+        .filter(seg => seg.length < 25)
+        // ❗ chỉ render những route có label
+        .filter(seg => routeNameMap[seg])
+        .map((segment, index) => {
+            // build href nhưng vẫn giữ prefix instructor thật
+            const realIndex = segments.indexOf(segment);
+            const href = '/' + segments.slice(0, realIndex + 1).join('/');
 
-        return {
-            title: (
-                <Link href={href}>
-                    {routeNameMap[segment]}
-                </Link>
-            ),
-        };
-    });
+            return {
+                title: <Link href={href}>{routeNameMap[segment]}</Link>,
+            };
+        });
 
     return (
         <Breadcrumb

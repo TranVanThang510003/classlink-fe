@@ -33,7 +33,7 @@ export const useQuiz = (quizId?: string) => {
                 return;
             }
 
-            const quizData = quizSnap.data();
+            const quizData = quizSnap.data() as Quiz;
 
             /* ===== QUESTIONS ===== */
             const q = query(
@@ -47,9 +47,10 @@ export const useQuiz = (quizId?: string) => {
             );
 
             /* ===== MERGE + NORMALIZE ===== */
+
             setQuiz({
-                id: quizSnap.id,
                 ...quizData,
+                id: quizSnap.id,
                 openAt: quizData.openAt instanceof Timestamp
                     ? quizData.openAt.toDate()
                     : null,
@@ -57,7 +58,7 @@ export const useQuiz = (quizId?: string) => {
                     ? quizData.closeAt.toDate()
                     : null,
                 questions,
-            } as QuizFormData);
+            } );
 
             setLoading(false);
         };

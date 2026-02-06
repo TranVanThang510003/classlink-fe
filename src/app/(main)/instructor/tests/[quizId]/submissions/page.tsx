@@ -9,7 +9,7 @@ import {useClassContext} from "@/contexts/ClassContext";
 
 export default function QuizSubmissionsPage() {
     const params = useParams();
-    const quizId = params.quizId as string;
+    const quizId = params?.quizId as string;
     const {activeClassId} = useClassContext()
 
 

@@ -2,12 +2,16 @@ import { collection, query, where, orderBy, onSnapshot } from "firebase/firestor
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
 
-export const useDocumentsByClass = (classId: string) => {
+export const useDocumentsByClass = (classId: string|null) => {
     const [documents, setDocuments] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-
+    console.log("Subscribing to documents for classId:", classId);
     useEffect(() => {
-        if (!classId) return;
+        if (!classId) {
+            setDocuments([]);
+            setLoading(true);
+            return;
+        }
 
         const q = query(
             collection(db, "documents"),

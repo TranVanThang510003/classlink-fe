@@ -6,39 +6,17 @@ import toast from "react-hot-toast";
 
 import SectionCard from "@/components/quizzes/SectionCard";
 import QuizSettings from "@/components/quizzes/QuizSettings";
+import {QuizFormData,QuizFormQuestion } from "@/types/quiz";
 
 /* ================= TYPES ================= */
 
-export type Question = {
-    id: string; // Firestore id | temp_xxx
-    text: string;
-    options: string[];
-    correctAnswer: number;
-};
 
 type QuizFormProps = {
     mode: "create" | "edit";
-    initialData?: {
-        title: string;
-        description?: string;
-        duration: number;
-        maxAttempts: number;
-        status: "draft" | "published";
-        openAt: Date | null;
-        closeAt: Date | null;
-        questions: Question[];
-    };
-    onSubmit: (data: {
-        title: string;
-        description?: string;
-        duration: number;
-        maxAttempts: number;
-        status: "draft" | "published";
-        openAt: Date | null;
-        closeAt: Date | null;
-        questions: Question[];
-    }) => Promise<void>;
+    initialData?: QuizFormData;
+    onSubmit: (data: QuizFormData) => Promise<void>;
 };
+
 
 let tempId = 0; // 🔥 dùng cho question mới
 
@@ -51,7 +29,7 @@ export default function QuizForm({
     /* ================= STATE ================= */
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [questions, setQuestions] = useState<Question[]>([]);
+    const [questions, setQuestions] = useState<QuizFormQuestion[]>([]);
     const [duration, setDuration] = useState(15);
     const [maxAttempts, setMaxAttempts] = useState(1);
 
@@ -95,7 +73,7 @@ export default function QuizForm({
         ]);
     };
 
-    const updateQuestion = (id: string, data: Partial<Question>) => {
+    const updateQuestion = (id: string, data: Partial<QuizFormQuestion >) => {
         setQuestions(qs =>
             qs.map(q => (q.id === id ? { ...q, ...data } : q))
         );

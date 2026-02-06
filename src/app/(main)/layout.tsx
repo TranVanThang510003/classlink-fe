@@ -30,6 +30,7 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = ({ children }: React.PropsWithChildren) =>  {
+
     return (
         <html lang="en">
         <body

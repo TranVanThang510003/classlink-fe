@@ -28,7 +28,7 @@ export interface CreateAssignmentPayload {
         fileType: string;
         fileSize: number;
     }[];
-    dueDate?: Timestamp | null;
+    dueDate?: Date | null;
     createdBy: string;
 }
 

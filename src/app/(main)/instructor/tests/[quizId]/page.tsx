@@ -1,11 +1,13 @@
 "use client"
+
 import QuizForm from "@/components/quizzes/QuizForm";
 import {useParams} from "next/navigation";
 import {useQuiz} from "@/hooks/quiz/useQuiz";
 import { updateQuizWithQuestions} from "@/services/quiz/quizService";
 
 export default function UpdateQuizPage() {
-    const { quizId } = useParams();
+    const params = useParams();
+    const quizId = params?.quizId as string;
     const { quiz, loading } = useQuiz(quizId as string);
 
     const handleUpdate = async (data: any) => {
