@@ -59,6 +59,7 @@ import { useStudentsByClass } from "@/hooks/student/useStudentsByClass";
 import {useAuthContext} from "@/contexts/AuthContext";
 import { useParams } from "next/navigation";
 import { useClasses } from "@/hooks/class/useClasses";
+import { Button } from "antd";
 
 const ManageClassStudentsPage = () => {
     const [showAddStudent, setShowAddStudent] = useState(false);
@@ -88,13 +89,21 @@ const ManageClassStudentsPage = () => {
 
     return (
         <div className="flex flex-col gap-6">
-            {/* ===== HEADER ===== */}
             <div className="flex justify-between items-center">
                 <h2 className="text-3xl font-semibold">
                     Manage Class Students
                 </h2>
 
+                {/* BACK BUTTON */}
+                <Button
+                    onClick={() => history.back()}
+                    className="px-4 py-2 border border-gray-300 rounded-lg
+                   hover:bg-gray-50 transition font-medium"
+                >
+                    ← Back
+                </Button>
             </div>
+
 
             {/* ===== TOOL BAR ===== */}
             <div className="flex justify-between items-center p-4 border border-gray-100">

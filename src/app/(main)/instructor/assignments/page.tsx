@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Input, Select, Spin } from "antd";
-import { useState } from "react";
+import {useMemo, useState} from "react";
 import { useAuthContext } from "@/contexts/AuthContext";
 import {useInstructorAssignmentsByClass} from "@/hooks/assignment/useInstructorAssignmentsByClass";
 import InstructorAssignmentTable from "@/components/assigments/InstructorAssignmentTable";
@@ -20,6 +20,15 @@ export default function InstructorAssignmentsPage() {
         activeClassId ?? undefined,
     );
 
+    const [keyword, setKeyword] = useState("");
+
+    // filter client-side
+    const filteredAsignments = useMemo(() => {
+        return assignments
+            .filter((d) =>
+                d.title.toLowerCase().includes(keyword.toLowerCase())
+            );
+    }, [assignments, keyword]);
     /* ===== GUARD (SAU HOOK) ===== */
     if (authLoading) {
         return (
@@ -52,6 +61,7 @@ export default function InstructorAssignmentsPage() {
                     placeholder="Search Assignment"
                     className="w-72"
                     disabled={!activeClassId}
+                    onChange={(e) => setKeyword(e.target.value)}
                 />
             </div>
 
@@ -66,7 +76,7 @@ export default function InstructorAssignmentsPage() {
                 </div>
             ) : (
                 <InstructorAssignmentTable
-                    assignments={assignments}
+                    assignments={filteredAsignments}
                 />
             )}
             <CreateAssignmentModal

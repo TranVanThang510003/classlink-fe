@@ -9,6 +9,11 @@ const routeNameMap: Record<string, string> = {
     tests: 'Tests & Quiz',
     submissions: 'Submissions',
     classes: 'Classes',
+    documents: 'Documents',
+    profile: 'Profile',
+    'manage-classes': 'Manage Classes',
+    'manage-student-accounts': 'Manage Student Accounts',
+    chat: 'Message',
 };
 
 export default function Breadcrumbs() {

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Input, Spin } from "antd";
-import { useState } from "react";
+import {useMemo, useState} from "react";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useClassContext } from "@/contexts/ClassContext";
 import UploadDocumentModal from "@/components/documents/UploadDocumentModal";
@@ -16,7 +16,15 @@ export default function InstructorAssignmentsPage() {
     const { loading: authLoading } = useAuthContext();
     const { activeClassId } = useClassContext();
     const { documents, loading } = useDocumentsByClass(activeClassId);
+    const [keyword, setKeyword] = useState("");
 
+    // filter client-side
+    const filteredDocs = useMemo(() => {
+        return documents
+            .filter((d) =>
+                d.title.toLowerCase().includes(keyword.toLowerCase())
+            );
+    }, [documents, keyword]);
     if (authLoading) {
         return (
             <div className="flex h-[60vh] items-center justify-center">
@@ -45,6 +53,7 @@ export default function InstructorAssignmentsPage() {
                 placeholder="Search documents"
                 className="w-72"
                 disabled={!activeClassId}
+                onChange={(e) => setKeyword(e.target.value)}
             />
 
             {/* CONTENT */}
@@ -58,7 +67,7 @@ export default function InstructorAssignmentsPage() {
                 </div>
             ) : (
                 <InstructorDocumentTable
-                    documents={documents}
+                    documents={filteredDocs}
                     onEdit={(doc) => setEditingDoc(doc)}
                 />
             )}

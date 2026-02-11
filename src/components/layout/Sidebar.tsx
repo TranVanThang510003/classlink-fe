@@ -7,7 +7,7 @@ import {
   FaBook,
   FaRegCommentDots,
   FaChalkboardTeacher,
-  FaClipboardCheck, FaQuestionCircle,
+  FaClipboardCheck, FaQuestionCircle, FaUserCircle,
 } from 'react-icons/fa';
 
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -107,6 +107,19 @@ const Sidebar = () => {
           name: 'Message',
           icon: <FaRegCommentDots />,
           path: '/chat',
+          roles: ['instructor', 'student'],
+        },
+      ],
+    },
+    /* ================= PROFILE ================= */
+    {
+      label: 'ACCOUNT',
+      highlight: false,
+      items: [
+        {
+          name: 'Profile',
+          icon: <FaUserCircle />,
+          path: '/profile',
           roles: ['instructor', 'student'],
         },
       ],
