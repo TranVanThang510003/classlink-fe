@@ -128,9 +128,9 @@ export default function QuizPlayer({ quiz, questions }: Props) {
                         Question {current + 1} of {questions.length}
                     </p>
 
-                    {/*<p className="text-gray-800 leading-relaxed mb-6">*/}
-                    {/*    {question.question}*/}
-                    {/*</p>*/}
+                    <p className="text-gray-800 leading-relaxed mb-6">
+                        {question.text}
+                    </p>
 
                     {/* OPTIONS */}
                     <div className="grid grid-cols-2 gap-4">
@@ -187,17 +187,25 @@ export default function QuizPlayer({ quiz, questions }: Props) {
 
                 {/* QUESTION NUMBERS */}
                 <div className="flex flex-wrap justify-center gap-2 max-w-[720px]">
-                    {visibleQuestions.map((_, i) => (
-                        <Button
-                            key={i}
-                            shape="square"
-                            type={i === current ? "primary" : "default"}
-                            className={i === current ? "!bg-[#1f3d2b]" : ""}
-                            onClick={() => setCurrent(i)}
-                        >
-                            {i + 1}
-                        </Button>
-                    ))}
+                    {visibleQuestions.map((_, i) => {
+                        const isCurrent = i === current;
+                        const isAnswered = answers[i] !== -1;
+
+                        return (
+                            <Button
+                                key={i}
+                                shape="square"
+                                type={isCurrent ? "primary" : "default"}
+                                className={`
+                                ${isCurrent ? "!bg-[#1f3d2b]" : ""}
+                                ${!isCurrent && isAnswered ? "!bg-green-100 !border-green-500 !text-green-700" : ""}
+                                `}
+                                onClick={() => setCurrent(i)}
+                            >
+                                {i + 1}
+                            </Button>
+                        );
+                    })}
                 </div>
 
                 {/* NEXT */}
