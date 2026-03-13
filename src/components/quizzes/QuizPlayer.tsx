@@ -13,14 +13,13 @@ dayjs.extend(utc);
 type Props = {
     quiz: Quiz;
     questions: QuizQuestion[];
-    studentId: string;
 };
 
 const MAX_VISIBLE = 14;
 const WARNING_TIME = 300;
 
 
-export default function QuizPlayer({ quiz, questions, studentId }: Props) {
+export default function QuizPlayer({ quiz, questions }: Props) {
     const [current, setCurrent] = useState(0);
     const [answers, setAnswers] = useState<number[]>(
         Array(questions.length).fill(-1)
@@ -129,9 +128,9 @@ export default function QuizPlayer({ quiz, questions, studentId }: Props) {
                         Question {current + 1} of {questions.length}
                     </p>
 
-                    <p className="text-gray-800 leading-relaxed mb-6">
-                        {question.question}
-                    </p>
+                    {/*<p className="text-gray-800 leading-relaxed mb-6">*/}
+                    {/*    {question.question}*/}
+                    {/*</p>*/}
 
                     {/* OPTIONS */}
                     <div className="grid grid-cols-2 gap-4">

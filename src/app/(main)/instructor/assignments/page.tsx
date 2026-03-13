@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Input, Select, Spin } from "antd";
+import { Button, Input,  Spin } from "antd";
 import {useMemo, useState} from "react";
 import { useAuthContext } from "@/contexts/AuthContext";
 import {useInstructorAssignmentsByClass} from "@/hooks/assignment/useInstructorAssignmentsByClass";
@@ -11,7 +11,6 @@ import {useClassContext} from "@/contexts/ClassContext";
 export default function InstructorAssignmentsPage() {
     const [openCreate, setOpenCreate] = useState(false);
 
-    /* ===== AUTH CONTEXT ===== */
     const {
         loading: authLoading,
     } = useAuthContext();
@@ -29,7 +28,8 @@ export default function InstructorAssignmentsPage() {
                 d.title.toLowerCase().includes(keyword.toLowerCase())
             );
     }, [assignments, keyword]);
-    /* ===== GUARD (SAU HOOK) ===== */
+
+
     if (authLoading) {
         return (
             <div className="flex h-[60vh] items-center justify-center">
@@ -41,7 +41,6 @@ export default function InstructorAssignmentsPage() {
 
     return (
         <div className="flex flex-col gap-6">
-            {/* ===== HEADER ===== */}
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-semibold">Assignmnent</h1>
 
@@ -54,7 +53,6 @@ export default function InstructorAssignmentsPage() {
                 </Button>
             </div>
 
-            {/* ===== FILTER BAR ===== */}
             <div className="flex gap-4 items-center">
 
                 <Input.Search
@@ -65,7 +63,6 @@ export default function InstructorAssignmentsPage() {
                 />
             </div>
 
-            {/* ===== CONTENT ===== */}
             {!activeClassId ? (
                 <div className="text-center text-gray-400 italic mt-10">
                     Please select a class

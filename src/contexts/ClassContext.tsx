@@ -12,7 +12,7 @@ type ClassItem = {
 
 type ClassContextType = {
     classes: ClassItem[];
-    activeClassId: string | null;
+    activeClassId?: string;
     setActiveClassId: (id: string) => void;
 };
 
@@ -35,7 +35,7 @@ export function ClassProvider({ children }: { children: React.ReactNode }) {
             : studentClasses;
 
     const [activeClassId, setActiveClassIdState] =
-        useState<string | null>(null);
+        useState<string>();
 
     /* restore + auto select */
     useEffect(() => {

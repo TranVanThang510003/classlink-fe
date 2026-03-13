@@ -9,9 +9,9 @@ export type Quiz = {
     description: string;
     createdBy: string;
     maxAttempts: number;
-    createdAt: Timestamp;
-    openAt: Timestamp;
-    closeAt: Timestamp;
+    createdAt: Timestamp|null;
+    openAt: Timestamp | null;
+    closeAt: Timestamp | null;
     totalQuestions: number;
 };
 
@@ -61,4 +61,12 @@ export type QuizFormData = {
     openAt: Date | null;
     closeAt: Date | null;
     questions: QuizFormQuestion[];
+};
+export type StudentQuiz = Quiz & {
+    attempts: number;
+    isLocked: boolean;
+    bestScore?: number;
+    totalQuestions: number;
+    isNotOpenYet: boolean;
+    isClosed: boolean;
 };

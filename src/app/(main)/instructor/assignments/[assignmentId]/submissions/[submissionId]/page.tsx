@@ -13,11 +13,10 @@ import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 export default function SubmissionDetailPage() {
-    const params = useParams();
-    const router = useRouter();
 
-    const assignmentId = params.assignmentId as string;
-    const submissionId = params.submissionId as string;
+    const router = useRouter();
+    const {assignmentId}  = useParams() as { assignmentId: string };
+    const {submissionId} = useParams() as { submissionId: string };
 
     const { assignment, loading: assignmentLoading } =
         useAssignmentDetail(assignmentId);
@@ -90,7 +89,6 @@ export default function SubmissionDetailPage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* ================= LEFT CONTENT ================= */}
                 <div className="lg:col-span-2 space-y-6 ">
                     {/* ===== STUDENT INFO CARD ===== */}
                     <div className="bg-white rounded-xl shadow-sm border-1 border-yellow-300 p-6 flex justify-between items-center">
@@ -203,7 +201,6 @@ export default function SubmissionDetailPage() {
                     )}
                 </div>
 
-                {/* ================= RIGHT PANEL ================= */}
                 <div className="bg-white rounded-xl p-6 h-fit shadow-sm space-y-5">
                     <h3 className="text-lg font-semibold">
                         Grading

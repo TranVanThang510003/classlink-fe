@@ -1,28 +1,30 @@
-'use client';
+'use client'
 
 import { useParams } from "next/navigation";
-
+import { useAuthContext } from "@/contexts/AuthContext";
+import { useStudentSubmission } from "@/hooks/quiz/useStudentSubmission";
 import { useQuiz } from "@/hooks/quiz/useQuiz";
-import { useSubmission } from "@/hooks/quiz/useQuizSubmission";
 
 import SubmissionReview from "@/components/quizzes/SubmissionReview";
 
-export default function SubmissionDetailPage() {
-    const params = useParams();
+export default function StudentResultPage() {
 
-    const quizId = params?.quizId as string | undefined;
-    const submissionId = params?.submissionId as string | undefined;
+    const params = useParams();
+    const quizId = params?.quizId as string;
+
+    const { user } = useAuthContext();
 
     const { quiz, loading: quizLoading } = useQuiz(quizId);
-    const { data: submission, isLoading } = useSubmission(quizId, submissionId);
 
+    const { data: submission, isLoading } =
+        useStudentSubmission(quizId, user?.uid);
 
-    if (quizLoading ||  isLoading) {
-        return <div className="p-6">Loading...</div>;
+    if (quizLoading || isLoading) {
+        return <div>Loading...</div>;
     }
 
     if (!quiz || !submission) {
-        return <div className="p-6">Submission not found</div>;
+        return <div>No submission</div>;
     }
 
     return (
@@ -34,8 +36,6 @@ export default function SubmissionDetailPage() {
             score={submission.score}
             submittedAt={submission.submittedAt}
             durationMinutes={submission.durationMinutes}
-            studentName={submission.studentName}
-            studentEmail={submission.studentEmail}
         />
     );
 }

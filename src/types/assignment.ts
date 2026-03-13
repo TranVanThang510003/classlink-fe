@@ -1,4 +1,3 @@
-import {Timestamp} from "firebase/firestore";
 
 export type AssignmentAttachment = {
     fileUrl: string;
@@ -16,10 +15,10 @@ export type Assignment = {
     // luôn là array (dễ render)
     attachments?: AssignmentAttachment[];
 
-    dueDate?: Timestamp| null;
+    dueDate?: Date| null;
     status: "draft" | "published";
     createdBy: string;
-    createdAt?: Timestamp| null;
+    createdAt?: Date| null;
 };
 export interface StudentAssignment extends Assignment {
     submission?: AssignmentSubmission | null;
@@ -33,7 +32,7 @@ export type AssignmentSubmission = {
     content?: string;
     attachments?: AssignmentSubmissionAttachment[];
     submittedBy: string;
-    submittedAt?: Timestamp | null ;
+    submittedAt?: Date | null ;
     score?: number;
     teacherComment?: string;
 };
@@ -53,8 +52,8 @@ export type TeacherSubmissionListItem = {
     classId: string;
     submittedBy: string;
     studentName?: string;
-    submittedAt:Timestamp | null;
-    dueDate?:  Timestamp | null;
+    submittedAt: Date | null;
+    dueDate?: Date | null;
     score?: number;
     feedback?: string;
 };

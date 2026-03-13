@@ -1,4 +1,4 @@
-// app/(instructor)/assignments/[assignmentId]/submissions/page.tsx
+
 'use client';
 
 import { Spin } from 'antd';
@@ -9,14 +9,10 @@ import { useInstructorAssignmentSubmissions } from '@/hooks/assignment/useInstru
 import AssignmentSubmissionList from '@/components/assigments/AssignmentSubmissionList';
 
 export default function AssignmentSubmissionsPage() {
-    const params = useParams();
-    const assignmentId = params.assignmentId as string;
-
-    // 1️⃣ Lấy assignment
+    const { assignmentId } = useParams() as { assignmentId: string };
     const { assignment, loading: assignmentLoading } =
         useAssignmentDetail(assignmentId);
 
-    // 2️⃣ Lấy submissions (sau khi có classId)
     const { submissions, loading: submissionsLoading } =
         useInstructorAssignmentSubmissions(
             assignmentId,
@@ -38,7 +34,7 @@ export default function AssignmentSubmissionsPage() {
 
     return (
         <div className="flex flex-col gap-6">
-            {/* ===== HEADER ===== */}
+
             <div>
                 <h2 className="text-2xl font-semibold">
                     Submissions – {assignment.title}

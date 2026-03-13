@@ -69,7 +69,7 @@ export default function InstructorAssignmentDetailPage() {
                     </div>
                 </div>
 
-                {/* ===== DESCRIPTION ===== */}
+
                 <div className="rounded-xl bg-white px-8 py-6 shadow-sm">
                     <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-500">
                         Assignment description
@@ -88,16 +88,14 @@ export default function InstructorAssignmentDetailPage() {
                         </p>
                     )}
                 </div>
-
-                {/* ===== ATTACHMENTS ===== */}
-                {assignment.attachments?.length > 0 && (
+                {(assignment.attachments?.length ?? 0) > 0 && (
                     <div className="rounded-xl bg-white px-8 py-6 shadow-sm">
                         <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-500">
                             Attachments
                         </h2>
 
                         <div className="space-y-3">
-                            {assignment.attachments.map((file) => (
+                            {assignment.attachments?.map((file) => (
                                 <a
                                     key={file.fileUrl}
                                     href={file.fileUrl}

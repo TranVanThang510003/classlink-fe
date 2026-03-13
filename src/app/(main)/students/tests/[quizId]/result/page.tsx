@@ -52,7 +52,7 @@ export default function QuizResultPage() {
                             type="circle"
                             percent={percent}
                             strokeWidth={10}
-                            width={120}
+                            size={120}
                             strokeColor={isPassed ? "#2563eb" : "#dc2626"}
                             format={() => (
                                 <span className="text-lg font-semibold">

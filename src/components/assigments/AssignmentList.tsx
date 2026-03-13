@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function AssignmentList({ assignments }: Props) {
-    // 🚑 Handle undefined / null / empty
+    //  Handle undefined / null / empty
     if (!assignments || assignments.length === 0) {
         return (
             <div className="mt-16 text-center text-sm text-gray-400 italic">

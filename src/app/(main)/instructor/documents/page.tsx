@@ -18,7 +18,6 @@ export default function InstructorAssignmentsPage() {
     const { documents, loading } = useDocumentsByClass(activeClassId);
     const [keyword, setKeyword] = useState("");
 
-    // filter client-side
     const filteredDocs = useMemo(() => {
         return documents
             .filter((d) =>
@@ -35,7 +34,6 @@ export default function InstructorAssignmentsPage() {
 
     return (
         <div className="flex flex-col gap-6">
-            {/* HEADER */}
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-semibold">Document</h1>
 
@@ -48,7 +46,6 @@ export default function InstructorAssignmentsPage() {
                 </Button>
             </div>
 
-            {/* SEARCH */}
             <Input.Search
                 placeholder="Search documents"
                 className="w-72"
@@ -56,7 +53,6 @@ export default function InstructorAssignmentsPage() {
                 onChange={(e) => setKeyword(e.target.value)}
             />
 
-            {/* CONTENT */}
             {!activeClassId ? (
                 <div className="text-center text-gray-400 italic mt-10">
                     Please select a class

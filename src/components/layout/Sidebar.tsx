@@ -75,7 +75,7 @@ const Sidebar = () => {
           path:
               role === 'instructor'
                   ? '/instructor/documents'
-                  : 'students/documents',
+                  : 'documents',
           roles: ['instructor', 'student'],
         },
 
@@ -133,7 +133,7 @@ const Sidebar = () => {
       <aside className="w-72 h-screen bg-gradient-to-b from-[#0B1C3D] to-[#08183A] px-4 py-6">
         {/* LOGO */}
         <div className="text-white text-xl font-semibold px-3 mb-8">
-          School Admin
+          Class Link
         </div>
 
         <nav className="space-y-5">

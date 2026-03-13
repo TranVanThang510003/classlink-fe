@@ -7,7 +7,8 @@ import dayjs from "dayjs";
 
 import { useClassContext } from "@/contexts/ClassContext";
 import { useQuizzes } from "@/hooks/quiz/useQuizzes";
-import backgroundColor from "@tiptap/extension-text-style/src/background-color";
+import {StudentQuiz} from "@/types/quiz";
+
 
 export default function StudentQuizListPage() {
     const router = useRouter();
@@ -133,7 +134,7 @@ export default function StudentQuizListPage() {
                                            }}
                                             disabled={!canView}
                                             onClick={() =>
-                                                router.push(`/students/tests/${record.id}/result`)
+                                                router.push(`/students/tests/${record.id}/viewAnswer`)
                                             }
                                         >
                                             View Answers

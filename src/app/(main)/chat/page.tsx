@@ -20,7 +20,6 @@ export default function ChatPage() {
 
     const [openCreateGroup, setOpenCreateGroup] = useState(false);
     const { uid, loading: authLoading,role } = useAuthContext();
-    const {  classes } = useClassContext();
     const isTeacher = role === "instructor";
     const currentUserId = uid;
 
@@ -47,7 +46,6 @@ export default function ChatPage() {
             <Toaster position="top-right" />
 
             <div className="flex h-screen p-6 bg-gray-50 gap-6">
-                {/* LEFT – CONVERSATION LIST */}
                 <div className="w-80">
                     <ConversationList
                         items={conversations}
@@ -59,7 +57,6 @@ export default function ChatPage() {
                     />
                 </div>
 
-                {/* RIGHT – CHAT BOX */}
                 <div className="flex-1 h-[80vh]">
                     <ChatBox
                         chatId={selectedChat.chatId}
@@ -70,7 +67,6 @@ export default function ChatPage() {
                 </div>
             </div>
 
-            {/* CREATE GROUP MODAL – CHỈ INSTRUCTOR THẤY */}
             {isTeacher && (
                 <CreateGroupModal
                 open={openCreateGroup}

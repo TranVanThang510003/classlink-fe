@@ -3,9 +3,7 @@ import { doc, getDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import type { Assignment } from "@/types/assignment";
 
-/* =======================
-   HELPER
-======================= */
+
 function toDate(value: any): Date | null {
     if (!value) return null;
     if (value instanceof Timestamp) return value.toDate();
@@ -13,9 +11,6 @@ function toDate(value: any): Date | null {
     return null;
 }
 
-/* =======================
-   HOOK
-======================= */
 export function useAssignmentDetail(assignmentId?: string) {
     const [assignment, setAssignment] = useState<Assignment | null>(null);
     const [loading, setLoading] = useState(true);

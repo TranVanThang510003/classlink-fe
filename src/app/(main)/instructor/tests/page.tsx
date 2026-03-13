@@ -29,20 +29,17 @@ export default function InstructorQuizListPage() {
 
 
     const handleDelete = async (id: string) => {
-        // 1️⃣ lưu lại state cũ để rollback
         const prev = quizzes;
-
-        // 2️⃣ update UI ngay
         setQuizzes(prev => prev.filter(q => q.id !== id));
 
         try {
-            // 3️⃣ delete Firestore
+
             await deleteQuiz(id);
             toast.success("Quiz deleted");
         } catch (err) {
             toast.error("Failed to delete quiz");
 
-            // 4️⃣ rollback UI nếu lỗi
+            //  rollback UI nếu lỗi
             setQuizzes(prev);
         }
     };
@@ -53,7 +50,6 @@ export default function InstructorQuizListPage() {
     ) => {
         const nextStatus = currentStatus === "published" ? "draft" : "published";
 
-        // 1️⃣ optimistic UI
         setQuizzes(prev =>
             prev.map(q =>
                 q.id === quizId ? { ...q, status: nextStatus } : q
@@ -61,7 +57,7 @@ export default function InstructorQuizListPage() {
         );
 
         try {
-            // 2️⃣ update Firestore
+            //  update Firestore
             await updateQuiz(quizId, { status: nextStatus });
 
             toast.success(
@@ -72,7 +68,7 @@ export default function InstructorQuizListPage() {
         } catch {
             toast.error("Action failed");
 
-            // 3️⃣ rollback
+            //  rollback
             setQuizzes(prev =>
                 prev.map(q =>
                     q.id === quizId ? { ...q, status: currentStatus } : q

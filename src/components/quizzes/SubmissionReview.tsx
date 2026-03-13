@@ -3,8 +3,6 @@
 import { Card, Tag, Progress, Typography, Row, Col, Avatar } from "antd";
 import { UserOutlined, MailOutlined } from "@ant-design/icons";
 import type {QuizQuestion} from "@/types/quiz";
-/* ================= TYPES ================= */
-
 
 
 export type SubmissionReviewProps = {
@@ -36,7 +34,7 @@ function QuestionReview({
     const isCorrect = studentAnswer === question.correctAnswer;
 
     return (
-        <Card style={{ borderRadius: 16 }} bodyStyle={{ padding: 16 }}>
+        <Card style={{ borderRadius: 16 ,padding: 16}}>
             {/* Header */}
             <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                 <Title level={5} style={{ margin: 0 }}>

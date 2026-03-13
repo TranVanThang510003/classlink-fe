@@ -3,76 +3,31 @@
 import { Spin, Tag } from 'antd';
 import { useParams, useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import SubmitAssignment from '@/components/assigments/SubmitAssignment';
 import { useAssignmentDetail } from '@/hooks/assignment/useAssignmentDetail';
 
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import {useAuthContext} from "@/contexts/AuthContext";
 
-type AuthUser = {
-    uid: string;
-    role: 'student' | 'instructor';
-    name?: string;
-};
 
 export default function AssignmentDetailPage() {
     const params = useParams();
     const router = useRouter();
     const assignmentId = params?.assignmentId as string;
 
-    /* =========================
-       ASSIGNMENT
-    ========================= */
+    const { uid, role, loading: authLoading } = useAuthContext();
+
     const { assignment, loading: assignmentLoading } =
         useAssignmentDetail(assignmentId);
 
-    /* =========================
-       AUTH
-    ========================= */
-    const [user, setUser] = useState<AuthUser | null>(null);
-    const [authLoading, setAuthLoading] = useState(true);
 
     useEffect(() => {
-        const auth = getAuth();
+        if (!authLoading && role === "instructor") {
+            router.replace(`/instructor/assignments/${assignmentId}`);
+        }
+    }, [authLoading, role, assignmentId, router]);
 
-        const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-            if (!firebaseUser) {
-                setUser(null);
-                setAuthLoading(false);
-                return;
-            }
-
-            const snap = await getDoc(
-                doc(db, 'users', firebaseUser.uid)
-            );
-
-            const userData = snap.data() as AuthUser;
-
-            // ❌ Instructor không được vào trang student
-            if (userData.role === 'instructor') {
-                router.replace(
-                    `/instructor/assignments/${assignmentId}`
-                );
-                return;
-            }
-
-            setUser({
-                uid: firebaseUser.uid,
-                ...userData,
-            });
-
-            setAuthLoading(false);
-        });
-
-        return () => unsub();
-    }, [assignmentId, router]);
-
-    /* =========================
-       LOADING
-    ========================= */
     if (assignmentLoading || authLoading) {
         return (
             <div className="flex h-[60vh] items-center justify-center">
@@ -81,11 +36,8 @@ export default function AssignmentDetailPage() {
         );
     }
 
-    if (!assignment || !user) return null;
+    if (!assignment || !uid) return null;
 
-    /* =========================
-       UI (LMS STYLE)
-    ========================= */
     return (
         <div className="mx-auto max-w-4xl px-4 py-8 space-y-6">
 
@@ -119,7 +71,6 @@ export default function AssignmentDetailPage() {
                 </div>
             </div>
 
-            {/* ===== DESCRIPTION ===== */}
             <section className="rounded-lg shadow-sm bg-white p-6">
                 <h2 className="mb-3 text-lg font-medium">
                     Assignment Instructions
@@ -139,15 +90,14 @@ export default function AssignmentDetailPage() {
                 )}
             </section>
 
-            {/* ===== ATTACHMENTS ===== */}
-            {assignment.attachments?.length > 0 && (
+            {(assignment.attachments?.length ?? 0) > 0 && (
                 <section className="rounded-lg shadow-sm bg-white p-6">
                     <h2 className="mb-3 text-lg font-medium">
                         Files
                     </h2>
 
                     <ul className="space-y-2">
-                        {assignment.attachments.map((file) => (
+                        {assignment.attachments?.map((file) => (
                             <li key={file.fileUrl}>
                                 <a
                                     href={file.fileUrl}
@@ -163,7 +113,6 @@ export default function AssignmentDetailPage() {
                 </section>
             )}
 
-            {/* ===== SUBMISSION ===== */}
             {assignment.status === 'published' && (
                 <section className="rounded-lg shadow-sm bg-white p-6">
                     <h2 className="mb-4 text-lg font-medium">

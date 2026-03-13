@@ -26,7 +26,7 @@ const ManageStudentPage = () => {
             console.error("Failed to parse user", err);
         }
     }, []);
-    // Lấy TẤT CẢ student account
+
     const {
         data: students = [],
         isLoading,
@@ -49,7 +49,7 @@ const ManageStudentPage = () => {
                 Manage Student Accounts
             </h2>
 
-            {/* TOOL BAR */}
+
             <div className="flex justify-between p-4 border border-gray-100">
                 <div className="text-2xl font-bold">
                     {students.length} students
@@ -64,7 +64,6 @@ const ManageStudentPage = () => {
                         + Create Student
                     </button>
 
-                    {/* FILTER (future) */}
                     <div className="flex gap-2 bg-gray-50 rounded-sm border border-gray-400 px-4 py-2 items-center">
                         <FaSearch />
                         <span>Filter</span>
@@ -72,7 +71,6 @@ const ManageStudentPage = () => {
                 </div>
             </div>
 
-            {/* STUDENT TABLE */}
             {isLoading ? (
                 <Skeleton active paragraph={{ rows: 6 }} />
             ) : (
@@ -95,7 +93,6 @@ const ManageStudentPage = () => {
                 </div>
             )}
 
-            {/* ERROR */}
             {error && (
                 <div className="text-red-500 mt-2">
                     Failed to load students: {error.message}

@@ -30,12 +30,7 @@ export default function AssignmentItem({ assignment }: Props) {
         assignment.dueDate &&
         submission?.submittedAt &&
         dayjs(submission.submittedAt).isAfter(dayjs(assignment.dueDate));
-    console.log("dueDate", assignment.dueDate);
-    console.log("submittedAt", submission?.submittedAt);
-    console.log(
-        "isLate?",
-        dayjs(submission?.submittedAt).isAfter(dayjs(assignment.dueDate))
-    );
+
 
     return (
         <div

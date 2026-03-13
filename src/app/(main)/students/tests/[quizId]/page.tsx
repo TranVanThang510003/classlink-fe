@@ -5,13 +5,12 @@ import { Spin } from "antd";
 
 import QuizPlayer from "@/components/quizzes/QuizPlayer";
 import { useQuiz } from "@/hooks/quiz/useQuiz";
-import { useAuthContext } from "@/contexts/AuthContext";
 
 export default function TestQuizPage() {
     const params = useParams();
     const quizId = params?.quizId as string;
 
-    const { uid } = useAuthContext();
+
     const { quiz, loading } = useQuiz(quizId);
 
     if (loading) return <Spin />;
@@ -28,7 +27,6 @@ export default function TestQuizPage() {
         <QuizPlayer
             quiz={quiz}
             questions={quiz.questions}
-            studentId={uid}
         />
     );
 }

@@ -9,7 +9,7 @@ const Page: React.FC = () => {
     const router= useRouter()
     const { mutateAsync, isPending } = useSendOtp();
 
-    // Gửi OTP khi submit form
+
     const onFinish = async (values: { email: string }) => {
         try {
             const data = await mutateAsync({ email: values.email });

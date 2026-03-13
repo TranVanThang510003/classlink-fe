@@ -8,7 +8,6 @@ import SectionCard from "@/components/quizzes/SectionCard";
 import QuizSettings from "@/components/quizzes/QuizSettings";
 import {QuizFormData,QuizFormQuestion } from "@/types/quiz";
 
-/* ================= TYPES ================= */
 
 
 type QuizFormProps = {

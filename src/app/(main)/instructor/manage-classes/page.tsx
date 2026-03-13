@@ -16,7 +16,6 @@ export default function ManageClassesPage() {
         name: c.name,
         createdAt: c.createdAt,
         description:c.description,
-        // status: c.status ?? 'active',
         studentCount: c.studentIds?.length ?? 0,
     }));
 
@@ -30,7 +29,6 @@ export default function ManageClassesPage() {
 
     return (
         <div className="flex flex-col gap-6">
-            {/* HEADER */}
             <div className="flex justify-between items-center">
                 <h2 className="text-3xl font-semibold">Manage Classes</h2>
 
@@ -39,7 +37,6 @@ export default function ManageClassesPage() {
                 </Button>
             </div>
 
-            {/* CLASS TABLE */}
             <ClassListTable classes={classItems} onDelete={(id) => console.log(id)}/>
 
 

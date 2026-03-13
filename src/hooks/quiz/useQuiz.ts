@@ -11,10 +11,11 @@ import { useEffect, useState } from "react";
 import { Quiz, QuizQuestion } from "@/types/quiz";
 import { Timestamp } from "firebase/firestore";
 
-type QuizFormData = Quiz & {
+type QuizFormData = Omit<Quiz, "openAt" | "closeAt"> & {
+    openAt: Date | null;
+    closeAt: Date | null;
     questions: QuizQuestion[];
 };
-
 export const useQuiz = (quizId?: string) => {
     const [quiz, setQuiz] = useState<QuizFormData | null>(null);
     const [loading, setLoading] = useState(true);

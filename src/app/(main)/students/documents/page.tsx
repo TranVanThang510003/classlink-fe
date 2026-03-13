@@ -14,7 +14,7 @@ export default function StudentDocumentsPage() {
 
     const [keyword, setKeyword] = useState("");
 
-    // filter client-side + chỉ lấy published
+
     const filteredDocs = useMemo(() => {
         return documents
             .filter((d) =>
@@ -32,10 +32,8 @@ export default function StudentDocumentsPage() {
 
     return (
         <div className="flex flex-col gap-6">
-            {/* HEADER */}
             <h1 className="text-2xl font-semibold">Documents</h1>
 
-            {/* SEARCH */}
             <Input.Search
                 placeholder="Search documents"
                 className="w-72"
@@ -43,7 +41,6 @@ export default function StudentDocumentsPage() {
                 onChange={(e) => setKeyword(e.target.value)}
             />
 
-            {/* CONTENT */}
             {!activeClassId ? (
                 <div className="text-center text-gray-400 italic mt-10">
                     Please select a class

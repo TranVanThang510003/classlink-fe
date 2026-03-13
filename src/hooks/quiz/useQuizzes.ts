@@ -6,17 +6,9 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useEffect, useState } from "react";
-import { Quiz } from "@/types/quiz";
+import {Quiz, StudentQuiz} from "@/types/quiz";
 import {useAuthContext} from "@/contexts/AuthContext";
 
-type StudentQuiz = Quiz & {
-    attempts: number;
-    maxAttempts: number;
-    isLocked: boolean;
-    bestScore?: number;
-    totalQuestions: number;
-    isNotOpenYet: boolean;
-};
 
 export const useQuizzes = (
     classId?: string,

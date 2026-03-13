@@ -3,11 +3,11 @@
 // ================================
 'use client';
 
-import {Table, Button, Tag, Tooltip} from 'antd';
+import {Table,  Tag, Tooltip} from 'antd';
 import dayjs from 'dayjs';
 import type { TeacherSubmissionListItem } from '@/types/assignment';
 import {useParams, useRouter} from "next/navigation";
-import {EditOutlined, EyeOutlined} from "@ant-design/icons";
+import { EyeOutlined} from "@ant-design/icons";
 
 export default function AssignmentSubmissionList({
                                                      submissions,
@@ -15,7 +15,7 @@ export default function AssignmentSubmissionList({
     submissions: TeacherSubmissionListItem[];
 }) {
     const router = useRouter();
-    const params = useParams();
+    const params = useParams() as { assignmentId: string };
 
 
     return (

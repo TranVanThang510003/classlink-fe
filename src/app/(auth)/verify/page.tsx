@@ -12,12 +12,12 @@ import { auth } from "@/lib/firebase";
 const VerifyPage: React.FC = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const email = searchParams.get("email") || "";
+    const email = searchParams?.get("email") ?? "";
 
     const { mutateAsync: verifyOtp, isPending: verifying } = useVerifyOtp();
     const { mutateAsync: sendOtp, isPending: sending } = useSendOtp();
 
-    // ✅ Xác thực OTP
+
     const onFinish = async (values: { otp: string }) => {
         try {
             const res = await verifyOtp({
@@ -32,10 +32,9 @@ const VerifyPage: React.FC = () => {
 
             const { firebaseToken, user } = res.data;
 
-            // 🔐 Đăng nhập Firebase bằng Custom Token
+            //  Đăng nhập Firebase bằng Custom Token
             await signInWithCustomToken(auth, firebaseToken);
 
-            // 💾 Lưu user để FE dùng
             localStorage.setItem("user", JSON.stringify(user));
 
             toast.success("Đăng nhập thành công!");
@@ -47,7 +46,7 @@ const VerifyPage: React.FC = () => {
         }
     };
 
-    // 🔁 Gửi lại OTP
+
     const handleResendOtp = async () => {
         try {
             const res = await sendOtp({ email });

@@ -80,7 +80,12 @@ export function useStudentAssignmentsByClass(
         });
 
         function merge() {
-            if (!assignmentData.length) return;
+            if (!assignmentData.length) {
+                setAssignments([]);
+                setLoading(false);
+                return;
+            }
+
 
             const merged = assignmentData.map((a) => ({
                 ...a,
