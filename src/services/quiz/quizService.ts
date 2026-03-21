@@ -6,7 +6,7 @@ import {
     doc, deleteDoc, Timestamp, updateDoc, getDocs, query, where,
 } from "firebase/firestore";
 import {auth, db} from "@/lib/firebase";
-
+import type { DocumentReference, DocumentData } from "firebase/firestore";
 
 type UpdateQuizPayload = {
     title: string;
@@ -45,7 +45,7 @@ type CreateQuizPayload = {
 
 
 export async function quizService(payload: CreateQuizPayload) {
-    let quizRef;
+    let quizRef: DocumentReference<DocumentData>;
 
     try {
         /* =======================
@@ -82,7 +82,7 @@ export async function quizService(payload: CreateQuizPayload) {
         payload.questions.forEach((q, index) => {
             const questionRef = doc(collection(db, "quizQuestions"));
             batch.set(questionRef, {
-                quizId: quizRef.id,
+                quizId: quizRef.id ,
                 text: q.text,
                 options: q.options,
                 correctAnswer: q.correctAnswer,
