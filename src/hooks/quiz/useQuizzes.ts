@@ -2,7 +2,7 @@ import {
     collection,
     query,
     where,
-    getDocs,
+    getDocs, Timestamp,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useEffect, useState } from "react";
@@ -80,8 +80,9 @@ export const useQuizzes = (
 
                 const now = Date.now();
 
-                const openTime = quiz.openAt?.toDate?.().getTime();
-                const closeTime = quiz.closeAt?.toDate?.().getTime();
+
+                const openTime = quiz.openAt instanceof Timestamp ? quiz.openAt.toDate().getTime() : undefined;
+                const closeTime = quiz.closeAt instanceof Timestamp ? quiz.closeAt.toDate().getTime() : undefined;
 
                 const isNotOpenYet = !!openTime && now < openTime;
                 const isClosed = !!closeTime && now > closeTime;
