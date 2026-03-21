@@ -10,7 +10,7 @@ import StudentDocumentTable from "@/components/documents/StudentDocumentTable";
 export default function StudentDocumentsPage() {
     const { loading: authLoading } = useAuthContext();
     const { activeClassId } = useClassContext();
-    const { documents, loading } = usePublishedDocumentsByClass(activeClassId);
+    const { documents, loading } = usePublishedDocumentsByClass(activeClassId ?? null);
 
     const [keyword, setKeyword] = useState("");
 
