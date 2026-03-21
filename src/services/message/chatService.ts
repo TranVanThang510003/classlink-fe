@@ -7,7 +7,7 @@ import {
     serverTimestamp,
     getDocs,
     where,
-    Unsubscribe,
+    Unsubscribe, doc, updateDoc, arrayUnion,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import type { Message } from "@/types/chat";
@@ -99,3 +99,20 @@ export async function sendMessageService(
         createdAt: serverTimestamp(),
     });
 }
+export const addMemberToGroup = async (
+    chatId: string,
+    newUserId: string,
+    newUserName: string
+) => {
+    const chatRef = doc(db, "chats", chatId);
+
+    await updateDoc(chatRef, {
+        participants: arrayUnion(newUserId),
+        [`userName.${newUserId}`]: newUserName,
+    });
+
+    return {
+        success: true,
+        message: "Member added successfully",
+    };
+};

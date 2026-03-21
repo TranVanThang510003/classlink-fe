@@ -7,7 +7,7 @@ import ChatBox from "@/components/ChatBox";
 import CreateGroupModal from "@/components/CreateGroupModal";
 import {Spin} from "antd";
 import {useAuthContext} from "@/contexts/AuthContext";
-import {useClassContext} from "@/contexts/ClassContext";
+import AddMemberModal from "@/components/AddMemberModal";
 
 
 export default function ChatPage() {
@@ -31,7 +31,8 @@ export default function ChatPage() {
             chatName,
         });
     };
-
+    const [openAddMember, setOpenAddMember] = useState(false);
+    const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
 
     if (authLoading) {
         return (
@@ -54,6 +55,10 @@ export default function ChatPage() {
                         onSelect={handleSelect}
                         canCreateGroup={isTeacher}
                         onCreateGroup={() => setOpenCreateGroup(true)}
+                        onAddMember={(chatId) => {
+                            setSelectedChatId(chatId);
+                            setOpenAddMember(true);
+                        }}
                     />
                 </div>
 
@@ -73,8 +78,14 @@ export default function ChatPage() {
                 onClose={() => setOpenCreateGroup(false)}
                 teacherId={currentUserId!}
 
-            />
+                />
+
             )}
+            <AddMemberModal
+                open={openAddMember}
+                onClose={() => setOpenAddMember(false)}
+                chatId={selectedChatId!}
+            />
         </>
     );
 }

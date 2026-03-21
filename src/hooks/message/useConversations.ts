@@ -40,11 +40,11 @@ export function useConversations(currentUserId: string) {
 
                 let displayName = "Unknown";
 
-                // 🧠 Group chat
+                //  Group chat
                 if (data.isGroup) {
                     displayName = data.nameGroup || "Group chat";
                 }
-                // 🧠 1-1 chat
+                //  1-1 chat
                 else if (data.userName) {
                     const otherUserId = data.participants.find(
                         (id: string) => id !== currentUserId
@@ -54,6 +54,7 @@ export function useConversations(currentUserId: string) {
                             data.userName[otherUserId] || "Unknown user";
                     }
                 }
+
 
                 return {
                     id: d.id,

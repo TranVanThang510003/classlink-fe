@@ -1,108 +1,115 @@
 'use client';
 
-import { Button, Form, Input } from 'antd';
+import {Button, Form, Input, message} from 'antd';
 import { useCreateStudent } from "@/hooks/student/useStudents";
 import type { CreateStudentPayload } from '@/types/student';
-import toast from "react-hot-toast";
 
 const CreateStudentForm = () => {
     const [form] = Form.useForm<CreateStudentPayload>();
     const mutation = useCreateStudent();
+    const [messageApi, contextHolder] = message.useMessage();
 
-    const onFinish = (values: CreateStudentPayload) => {
-        mutation.mutate(values, {
-            onSuccess: (data: any) => {
-                toast.success(data?.message || "student account created successfully!");
-                form.resetFields();
-            },
-            onError: (error: any) => {
-                toast.error(error?.message || "Failed to create student");
-            },
-        });
+    const onFinish = async (values: CreateStudentPayload) => {
+        try {
+            await mutation.mutateAsync(values);
+
+            messageApi.success("Student account created successfully!");
+            form.resetFields();
+
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                messageApi.error(error.message);
+            } else {
+                messageApi.error("Failed to create student");
+            }
+        }
     };
 
     return (
-        <div className="flex flex-col">
-            <div className="flex w-full justify-center mb-4 text-3xl font-semibold">
-                Create Student Account
-            </div>
-
-            <Form
-                form={form}
-                layout="vertical"
-                onFinish={onFinish}
-                style={{ padding: '0 20px' }}
-            >
-                <div className="grid grid-cols-2 gap-4">
-
-                    {/* NAME */}
-                    <Form.Item
-                        name="name"
-                        label="Student Name"
-                        rules={[
-                            { required: true, message: "Please enter student name" },
-                            { min: 4, message: "Name must be at least 4 characters" },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-
-                    {/* EMAIL */}
-                    <Form.Item
-                        name="email"
-                        label="Email Address"
-                        rules={[
-                            { required: true, message: "Please enter email" },
-                            { type: "email", message: "Invalid email format" },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-
-                    {/* ADDRESS */}
-                    <Form.Item
-                        name="address"
-                        label="Address"
-                        rules={[
-                            { required: true, message: "Please enter address" },
-                            { min: 6, message: "Address must be at least 6 characters" },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-
-                    {/* PHONE */}
-                    <Form.Item
-                        name="phone"
-                        label="Phone Number"
-                        rules={[
-                            { required: true, message: "Please enter phone number" },
-                            {
-                                pattern: /^[0-9]{9,11}$/,
-                                message: "Phone must contain 9–11 digits",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-
+        <>
+            {contextHolder}
+            <div className="flex flex-col">
+                <div className="flex w-full justify-center mb-4 text-3xl font-semibold">
+                    Create Student Account
                 </div>
 
-                {/* SUBMIT */}
-                <Form.Item className="mt-6">
-                    <div className="text-right">
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={mutation.isPending}
-                            style={{ fontSize: 18, padding: "10px 32px" }}
+                <Form
+                    form={form}
+                    layout="vertical"
+                    onFinish={onFinish}
+                    style={{ padding: '0 20px' }}
+                >
+                    <div className="grid grid-cols-2 gap-4">
+
+                        {/* NAME */}
+                        <Form.Item
+                            name="name"
+                            label="Student Name"
+                            rules={[
+                                { required: true, message: "Please enter student name" },
+                                { min: 4, message: "Name must be at least 4 characters" },
+                            ]}
                         >
-                            Create Account
-                        </Button>
+                            <Input />
+                        </Form.Item>
+
+                        {/* EMAIL */}
+                        <Form.Item
+                            name="email"
+                            label="Email Address"
+                            rules={[
+                                { required: true, message: "Please enter email" },
+                                { type: "email", message: "Invalid email format" },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+
+                        {/* ADDRESS */}
+                        <Form.Item
+                            name="address"
+                            label="Address"
+                            rules={[
+                                { required: true, message: "Please enter address" },
+                                { min: 6, message: "Address must be at least 6 characters" },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+
+                        {/* PHONE */}
+                        <Form.Item
+                            name="phone"
+                            label="Phone Number"
+                            rules={[
+                                { required: true, message: "Please enter phone number" },
+                                {
+                                    pattern: /^[0-9]{9,11}$/,
+                                    message: "Phone must contain 9–11 digits",
+                                },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+
                     </div>
-                </Form.Item>
-            </Form>
-        </div>
+
+                    {/* SUBMIT */}
+                    <Form.Item className="mt-6">
+                        <div className="text-right">
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                loading={mutation.isPending}
+                                style={{ fontSize: 18, padding: "10px 32px" }}
+                            >
+                                Create Account
+                            </Button>
+                        </div>
+                    </Form.Item>
+                </Form>
+            </div>
+        </>
     );
 };
 

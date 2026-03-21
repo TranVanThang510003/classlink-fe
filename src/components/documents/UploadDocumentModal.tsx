@@ -140,7 +140,7 @@ export default function DocumentFormModal({
       confirmLoading={loading}
       title={isUpdateMode ? 'Update Document' : 'Upload Document'}
       okText={isUpdateMode ? 'Update' : 'Upload'}
-      destroyOnClose
+      destroyOnHidden
     >
       <div className="flex flex-col gap-4">
         <Input

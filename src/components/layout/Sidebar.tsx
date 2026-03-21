@@ -18,7 +18,7 @@ type UserRole = 'student' | 'instructor';
 
 const Sidebar = () => {
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname()|| "";
   const [role, setRole] = useState<UserRole | null>(null);
 
   /* =========================
@@ -49,7 +49,7 @@ const Sidebar = () => {
 
     {
       label: 'CLASS',
-      highlight: true, // 👉 nhóm phụ thuộc class
+      highlight: true, //  nhóm phụ thuộc class
       items: [
         {
           name: 'Assignments',
@@ -75,7 +75,7 @@ const Sidebar = () => {
           path:
               role === 'instructor'
                   ? '/instructor/documents'
-                  : 'documents',
+                  : '/students/documents',
           roles: ['instructor', 'student'],
         },
 

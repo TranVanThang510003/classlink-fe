@@ -61,12 +61,16 @@ export const createStudentAccount = async (
   });
 
   return {
-    id: docRef.id,
-    name: payload.name,
-    email: payload.email,
-    phone: payload.phone,
-    address: payload.address,
-    role: "student",
+    success: true,
+    message: "Student account created successfully!",
+    data: {
+      id: docRef.id,
+      name: payload.name,
+      email: payload.email,
+      phone: payload.phone,
+      address: payload.address,
+      role: "student",
+    },
   };
 };
 
