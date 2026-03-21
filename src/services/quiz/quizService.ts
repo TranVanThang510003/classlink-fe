@@ -45,7 +45,7 @@ type CreateQuizPayload = {
 
 
 export async function quizService(payload: CreateQuizPayload) {
-    let quizRef: DocumentReference<DocumentData>;
+    let quizRef: DocumentReference<DocumentData> | undefined;
 
     try {
         /* =======================
@@ -82,7 +82,7 @@ export async function quizService(payload: CreateQuizPayload) {
         payload.questions.forEach((q, index) => {
             const questionRef = doc(collection(db, "quizQuestions"));
             batch.set(questionRef, {
-                quizId: quizRef.id ,
+                quizId: quizRef!.id ,
                 text: q.text,
                 options: q.options,
                 correctAnswer: q.correctAnswer,
