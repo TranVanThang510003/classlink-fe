@@ -46,11 +46,12 @@ export function useInstructorAssignmentsByClass(classId?: string) {
             (snap) => {
 
                 const data: AssignmentUI[] = snap.docs.map((doc) => {
-                    const raw = doc.data()  as Assignment;;
+                    const raw = doc.data()  as Assignment;
                     return {
                         ...raw,
                         dueDate: toDate(raw.dueDate),
                         createdAt: toDate(raw.createdAt),
+                        id: doc.id,
                     };
                 });
 

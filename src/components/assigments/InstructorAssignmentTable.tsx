@@ -92,6 +92,7 @@ export default function InstructorAssignmentTable({
                     title: "",
                     align: "right",
                     render: (_, record) => (
+
                         <div className="flex gap-4 text-yellow-500 text-lg">
                             <Tooltip title="View" >
                                 <EyeOutlined className="cursor-pointer"
