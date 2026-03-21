@@ -67,7 +67,7 @@ const ManageClassStudentsPage = () => {
     const { uid, loading: authLoading } = useAuthContext();
 
     const params = useParams();
-    const classId = params.classId as string;
+    const classId = params?.classId as string;
 
     const { classes } = useClasses(uid ?? "");
     const activeClass = classes.find(c => c.id === classId);
