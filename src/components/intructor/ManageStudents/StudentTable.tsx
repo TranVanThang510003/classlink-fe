@@ -1,14 +1,15 @@
 import React from "react";
-import { Space, Table, Tag } from 'antd';
+import { Space, Table } from 'antd';
 import type { ColumnsType } from "antd/es/table";
 
+import type { Student } from "@/types/student";
 type Props = {
-  data: any[];
+  data: Student[];
   loading: boolean;
 };
 
 const StudentTable: React.FC<Props> = ({ data, loading }) => {
-  const columns: ColumnsType<any> = [
+  const columns: ColumnsType<Student> = [
     { title: 'student Name', dataIndex: 'name' },
     { title: 'Email', dataIndex: 'email' },
     { title: 'Phone', dataIndex: 'phone' },

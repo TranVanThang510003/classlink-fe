@@ -74,9 +74,13 @@ export default function AddMemberModal({ open, onClose, chatId }: Props) {
                 onClose();
             }, 300);
             toast.success("Added successfully");
-        } catch (err: any) {
-            toast.error(err.message || "Failed");
-        }
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                toast.error(err.message);
+            } else {
+                toast.error("Failed");
+            }
+            }
     };
 
     return (
@@ -87,6 +91,7 @@ export default function AddMemberModal({ open, onClose, chatId }: Props) {
                     <List.Item
                         actions={[
                             <Button
+                                key={user.id}
                                 type="primary"
                                 size="small"
                                 loading={mutation.isPending}

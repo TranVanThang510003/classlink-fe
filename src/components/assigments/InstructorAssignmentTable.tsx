@@ -7,11 +7,11 @@ import dayjs from "dayjs";
 import {useRouter} from "next/navigation";
 import {publishAssignment, unpublishAssignment} from "@/services/assignment/assignmentInstructorService";
 import toast from "react-hot-toast";
-
+import type { Assignment } from "@/types/assignment";
 export default function InstructorAssignmentTable({
                                                       assignments,
                                                   }: {
-    assignments: any[];
+    assignments: Assignment[];
 }) {
     const router = useRouter();
     return (

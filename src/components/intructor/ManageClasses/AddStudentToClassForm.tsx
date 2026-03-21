@@ -59,9 +59,13 @@ const AddStudentToClassForm = ({ classId }: Props) => {
                     toast.success("Students added to class");
                     form.resetFields();
                 },
-                onError: (err: any) => {
-                    toast.error(err?.message || "Failed to add students");
-                },
+                onError: (err: unknown) => {
+                    if (err instanceof Error) {
+                        toast.error(err.message);
+                    } else {
+                        toast.error("Failed to add students");
+                    }
+                }
             }
         );
     };

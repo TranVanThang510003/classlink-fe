@@ -7,7 +7,7 @@ import { useQuizResult } from "@/hooks/quiz/useQuizResult";
 export default function QuizResultPage() {
     const router = useRouter();
     const params = useParams();
-    const quizId = params.quizId as string;
+    const quizId = params?.quizId as string;
 
     const { result, loading } = useQuizResult(quizId);
 

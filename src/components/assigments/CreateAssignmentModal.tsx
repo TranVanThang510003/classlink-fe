@@ -3,7 +3,7 @@
 import { Modal, Input, DatePicker, Upload, Button } from "antd";
 import type { UploadFile } from "antd/es/upload/interface";
 import { useState } from "react";
-import dayjs from "dayjs";
+import dayjs, {Dayjs} from "dayjs";
 import { getAuth } from "firebase/auth";
 
 import { useCreateAssignment } from "@/hooks/assignment/useCreateAssignment";
@@ -21,7 +21,7 @@ export default function CreateAssignmentModal({
 }) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [dueDate, setDueDate] = useState<any>(null);
+    const [dueDate, setDueDate] = useState<Dayjs | null>(null);
     const [files, setFiles] = useState<UploadFile[]>([]);
 
     const auth = getAuth();

@@ -16,7 +16,7 @@ export default function QuestionList({
                     className="border p-4 rounded-lg bg-white"
                 >
                     <div className="font-semibold mb-2">
-                        {i + 1}. {q.question}
+                        {i + 1}. {q.text}
                     </div>
 
                     <ul className="space-y-1">
@@ -26,7 +26,7 @@ export default function QuestionList({
                                 className="flex items-center gap-2"
                             >
                                 {op}
-                                {idx === q.correctIndex && (
+                                {idx === q.correctAnswer && (
                                     <Tag color="green">Correct</Tag>
                                 )}
                             </li>
