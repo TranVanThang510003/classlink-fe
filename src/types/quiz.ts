@@ -9,9 +9,9 @@ export type Quiz = {
     description: string;
     createdBy: string;
     maxAttempts: number;
-    createdAt: Timestamp|null;
-    openAt: Timestamp | null;
-    closeAt: Timestamp | null;
+    createdAt: Date | null;
+    openAt: Date | null;
+    closeAt: Date | null;
     totalQuestions: number;
 };
 
