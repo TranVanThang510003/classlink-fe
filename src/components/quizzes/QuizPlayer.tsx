@@ -194,7 +194,7 @@ export default function QuizPlayer({ quiz, questions }: Props) {
                         return (
                             <Button
                                 key={i}
-                                shape="square"
+                                shape="default"
                                 type={isCurrent ? "primary" : "default"}
                                 className={`
                                 ${isCurrent ? "!bg-[#1f3d2b]" : ""}
