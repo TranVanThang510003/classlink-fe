@@ -9,7 +9,7 @@ ClassLink is a personal project — a lightweight **Learning Management System (
   Add student to class
   Instructor role-based access control 
   
-- ** Student Account Management**  
+- **Student Account Management**  
   Create/manage student Accounts
   Instructor role-based access control
 
@@ -21,7 +21,7 @@ ClassLink is a personal project — a lightweight **Learning Management System (
   Students submit files  
   Instructors grade and provide feedback
 
-- **Online Quizzes **  
+- **Online Quizzes**  
   Create timed quizzes (multiple-choice)  
   Attempt limits, time restrictions, automatic scoring
 
