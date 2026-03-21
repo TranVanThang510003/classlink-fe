@@ -16,7 +16,7 @@ const Page: React.FC = () => {
 
             if (data.success || data.EC === 0) {
                 toast.success(data.message ||  'Đã gửi mã OTP đến email của bạn!');
-                router.push(`/verify?email=${values.email}`);
+                router.push(`/verify/${values.email}`);
 
             } else {
                 toast.error(data.message || 'Gửi OTP thất bại!');
