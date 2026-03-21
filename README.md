@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ClassLink - Mini Learning Management System (LMS)
 
-## Getting Started
+ClassLink is a personal project — a lightweight **Learning Management System (LMS)** designed to support instructors and students in managing classes, assignments, quizzes, course materials, and real-time communication.
 
-First, run the development server:
+## Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Class Management**  
+  Create/manage classes
+  Add student to class
+  Instructor role-based access control 
+  
+- ** Student Account Management**  
+  Create/manage student Accounts
+  Instructor role-based access control
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Course Materials**  
+  Upload and organize documents (PDF, images, Word, etc.) per class
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Assignments**  
+  Instructors post assignments  
+  Students submit files  
+  Instructors grade and provide feedback
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Online Quizzes **  
+  Create timed quizzes (multiple-choice)  
+  Attempt limits, time restrictions, automatic scoring
 
-## Learn More
+- **Real-time Chat**  
+  Instant messaging between instructors and students within each class
 
-To learn more about Next.js, take a look at the following resources:
+- **Secure Authentication**  
+  Email + OTP verification  
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tech Stack
 
-## Deploy on Vercel
+### Frontend
+- **Framework**: Next.js 15 (App Router) · React 19 · TypeScript
+- **UI & Styling**: Ant Design 5 · Tailwind CSS 4
+- **Data Fetching**: TanStack React Query v5 · Axios
+- **Rich Text Editing**: Tiptap (Starter Kit + color, alignment, placeholder extensions)
+- **Icons**: Font Awesome · React Icons
+- **Firebase**: Client-side SDK (Auth, Firestore)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Backend
+- **Runtime**: Node.js + Express.js
+- **Database & Storage**: Firebase Firestore + Firebase Storage
+- **Authentication**: Firebase Authentication + Custom Tokens
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Development Tools
+- ESLint + Next.js config
+- TypeScript
+- Git & GitHub
+- Vercel (deployment)
+
+## Live Demo & How to Test
+
+**Live Demo**:  
+https://classlink-fe.vercel.app/
+
+**Quick Test Accounts** (for demo purposes on the live site):  
+Use these pre-configured accounts to log in without registration:
+
+- **Instructor account**  
+  Email: `instructor@test.com`  
+  OTP: `123456`
+
+- **Student account**  
+  Email: `student@test.com`  
+  OTP: `123456`
+
+  
