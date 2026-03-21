@@ -17,7 +17,7 @@ const routeNameMap: Record<string, string> = {
 };
 
 export default function Breadcrumbs() {
-    const pathname = usePathname();
+    const pathname = usePathname()|| '';
 
     const segments = pathname.split('/').filter(Boolean);
 

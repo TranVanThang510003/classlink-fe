@@ -11,21 +11,19 @@ import { db } from "@/lib/firebase";
 
 import type { Assignment } from "@/types/assignment";
 
-/* =======================
-   HELPER
-======================= */
-function toDate(value: any): Date | null {
+function toDate(value: unknown): Date | null {
     if (!value) return null;
     if (value instanceof Timestamp) return value.toDate();
     if (value instanceof Date) return value;
     return null;
 }
+type AssignmentUI = Omit<Assignment, "dueDate" | "createdAt"> & {
+    dueDate: Date | null;
+    createdAt: Date | null;
+};
 
-/* =======================
-   HOOK
-======================= */
 export function useInstructorAssignmentsByClass(classId?: string) {
-    const [assignments, setAssignments] = useState<Assignment[]>([]);
+    const [assignments, setAssignments] = useState<AssignmentUI[]>([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -46,10 +44,10 @@ export function useInstructorAssignmentsByClass(classId?: string) {
         const unsub = onSnapshot(
             q,
             (snap) => {
-                const data = snap.docs.map((doc) => {
-                    const raw = doc.data();
+
+                const data: AssignmentUI[] = snap.docs.map((doc) => {
+                    const raw = doc.data()  as Assignment;;
                     return {
-                        id: doc.id,
                         ...raw,
                         dueDate: toDate(raw.dueDate),
                         createdAt: toDate(raw.createdAt),

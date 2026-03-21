@@ -10,7 +10,7 @@ import { db } from "@/lib/firebase";
 import type { Assignment } from "@/types/assignment";
 import { Timestamp } from "firebase/firestore";
 
-function toDate(value: any): Date | null {
+function toDate(value:  unknown): Date | null {
     if (!value) return null;
     if (value instanceof Timestamp) return value.toDate();
     if (value instanceof Date) return value;

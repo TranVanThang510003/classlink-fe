@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { getMyAssignmentSubmission } from "@/services/assignment/assignmentStudentService";
-
 export function useMySubmission(
     assignmentId: string,
     userId?: string
 ) {
-    const [submission, setSubmission] = useState<any>(null);
+    const [submission, setSubmission] = useState<unknown>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

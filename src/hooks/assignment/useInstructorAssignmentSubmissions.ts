@@ -1,6 +1,6 @@
 
 'use client';
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, Timestamp } from "firebase/firestore";
 import { useEffect, useState } from 'react';
 import {
     collection,
@@ -13,7 +13,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type {TeacherSubmissionListItem} from "@/types/assignment";
-
+import type {Submission} from "@/types/quiz";
 
 /* ================================
    HOOK
@@ -25,7 +25,7 @@ export function useInstructorAssignmentSubmissions(
 ) {
     const [submissions, setSubmissions] = useState<TeacherSubmissionListItem[]>([]);
     const [loading, setLoading] = useState(true);
-    const [dueDate, setDueDate] = useState<any>(null);
+    const [dueDate, setDueDate] = useState<Timestamp |null>(null);
 
     useEffect(() => {
         if (!assignmentId) return;
@@ -85,9 +85,11 @@ export function useInstructorAssignmentSubmissions(
                     });
                 }
 
-                const merged = raw.map((s) => ({
+                const merged: TeacherSubmissionListItem[] = raw.map((s) => ({
                     ...s,
-                    dueDate: dueDate?.toDate ? dueDate.toDate() : dueDate,
+                    dueDate: dueDate instanceof Timestamp
+                        ? dueDate.toDate()
+                        : null,
                     studentName: userMap[s.submittedBy] ?? 'Unknown',
                 }));
 
@@ -110,7 +112,7 @@ export function useInstructorAssignmentSubmissions(
 
 
 export function useSubmissionDetail(submissionId: string) {
-    const [submission, setSubmission] = useState<any>(null);
+    const [submission, setSubmission] = useState<Submission | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -133,17 +135,19 @@ export function useSubmissionDetail(submissionId: string) {
             const submissionData = {
                 id: snap.id,
                 ...snap.data(),
-            } as any;
+            } as Submission;
 
             // 2. Get student info
-            if (submissionData.submittedBy) {
+            if (submissionData.studentId) {
                 const userSnap = await getDoc(
-                    doc(db, "users", submissionData.submittedBy)
+                    doc(db, "users", submissionData.studentId)
                 );
 
-                submissionData.studentName = userSnap.exists()
-                    ? userSnap.data().name
-                    : "Unknown";
+                if (submissionData.student) {
+                    submissionData.student.name = userSnap.exists()
+                        ? userSnap.data().name
+                        : "Unknown";
+                }
             }
 
             setSubmission(submissionData);
