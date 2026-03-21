@@ -35,13 +35,14 @@ type SubmitAssignmentProps = {
    TOOLBAR
 ======================= */
 function EditorToolbar({
-                           editor,
-                           disabled,
-                       }: {
+    editor,
+    disabled,
+}: {
     editor: Editor | null;
     disabled: boolean;
 }) {
     if (!editor || disabled) return null;
+
     return (
         <div className="flex flex-wrap items-center gap-1 border-b pb-2 mb-3">
             <Button size="small" onClick={() => editor.chain().focus().toggleBold().run()}>
